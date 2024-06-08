@@ -1,14 +1,16 @@
 open Vec3
 
-type hitRecord = {
-    t: float;
-    normal: vec3;
-    pos: vec3
-}
+module HitRecord = struct
+    type hitRecord = {
+        t: float;
+        normal: Vec3.vec3;
+        pos: Vec3.vec3;
+    }
 
-type hit =
-    | Miss
-    | Hit of hitRecord
+    type hit =
+        | Miss
+        | Hit of hitRecord
 
-let newHitRecord t norm pos =
-    Hit ({ t = t; normal = norm; pos = pos })
+    let newHitRecord t norm pos =
+        Hit ({ t = t; normal = norm; pos = pos })
+end

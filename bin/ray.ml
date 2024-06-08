@@ -1,9 +1,11 @@
 open Vec3
 
-type ray = {
-    origin: vec3;
-    direction: vec3
-}
+module Ray = struct
+    type ray = {
+        origin: Vec3.vec3;
+        direction: Vec3.vec3
+    }
 
-let newRay o d =
-    { origin = o; direction = d }
+    let newRay o d =
+        { origin = o; direction = d }
+end
