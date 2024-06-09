@@ -61,6 +61,9 @@ module Vec3 = struct
     let compMax a b =
         { x = max a.x b.x; y = max a.y b.y; z = max a.z b.z }
 
+    let reflect a n =
+        sub (a) (scalar n (2. *. dot a n))
+
     let nearZero x =
         let s = 1e-8 in
         Float.abs x.x < s && Float.abs x.y < s && Float.abs x.z < s
