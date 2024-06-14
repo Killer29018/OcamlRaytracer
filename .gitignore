@@ -2,3 +2,5 @@
 .envrc
 _build/*
 output.ppm
+output.png
+*.mtl

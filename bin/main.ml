@@ -4,59 +4,89 @@ open Ray
 open Shape
 open Material
 
+open Obj
+
+(* Parameters *)
 let viewportWidth = 2.
 let aspectRatio = 16. /. 9.
 let viewportHeight = viewportWidth *. (1. /. aspectRatio)
-let viewportDistance = 1.8
-
-let left = (~-.viewportWidth) /. 2.
-let right = viewportWidth /. 2.
-let top = viewportHeight /. 2.
-let bottom = (~-.viewportHeight) /. 2.
+let viewportDistance = 1.2
 
 let imageWidth = 1080
 let imageHeight = int_of_float (ceil ((float_of_int imageWidth) *. (1. /. aspectRatio)))
 
-let origin = Vec3.newVec3 0. 0. ~-.3.8
-let forward = Vec3.norm (Vec3.newVec3 0. ~-.0. 1.)
+let cameraPosition = Vec3.newVec3 0. 1. ~-.8.
 
-let maxDepth = 100
-let samples = 10
+let lookAt = Vec3.newVec3 0. 0. 0.
+let worldUp = Vec3.newVec3 0. 1. 0.
+
+let maxDepth = 40
+let samples = 40
+
+(* Calculated *)
+let windowLeft = (~-.viewportWidth) /. 2.
+let windowRight = viewportWidth /. 2.
+let windowTop = viewportHeight /. 2.
+let windowBottom = (~-.viewportHeight) /. 2.
+
+let cameraDirection = Vec3.sub lookAt cameraPosition
+
+let forward = Vec3.norm cameraDirection
+let right = Vec3.norm (Vec3.cross worldUp forward)
+let up = Vec3.norm (Vec3.cross forward right)
+
+let leftBound = Vec3.scalar right windowLeft
+let rightBound = Vec3.scalar right windowRight
+let upperBound = Vec3.scalar up windowTop
+let lowerBound = Vec3.scalar up windowBottom
 
 let material_ground =
-    Shape.{ mat = Material.Lambertian (Material.{ albedo = Vec3.newVec3 0.8 0.8 0. }) }
+    Material.Lambertian (Material.{ albedo = Vec3.newVec3 0.8 0.8 0. })
 
 let material_centre =
-    Shape.{ mat = Material.Lambertian (Material.{ albedo = Vec3.newVec3 0.1 0.2 0.5 }) }
+    Material.Lambertian (Material.{ albedo = Vec3.newVec3 0.1 0.2 0.5 })
 
 let material_left =
-    Shape.{ mat = Material.Metal (Material.{ albedo = Vec3.newVec3 0.8 0.8 0.8 }, Material.{ fuzz = 0.3 }) }
+    Material.Dielectric (Material.nullMaterialGeneral (), Material.{ refraction = 1.5 })
 
 let material_right =
-    Shape.{ mat = Material.Metal (Material.{ albedo = Vec3.newVec3 0.8 0.6 0.2 }, Material.{ fuzz = 1. }) }
+    Material.Metal (Material.{ albedo = Vec3.newVec3 0.8 0.6 0.2 }, Material.{ fuzz = 1. })
+
+let material_triangle =
+    Material.Lambertian (Material.{ albedo = Vec3.newVec3 1. 0. 0. })
+
+let material_ball =
+    Material.Metal (Material.{ albedo = Vec3.newVec3 0. 0.8 0.8 }, Material.{ fuzz = 0.7 })
+
+let material_monkey =
+    Material.Metal (Material.{ albedo = Vec3.newVec3 0.8 0. 0.8 }, Material.{ fuzz = 0.3 })
+
+let ball = Obj.getTriangles "Ball.obj" (Vec3.newVec3 ~-.3. 1. ~-.1.2) material_ball
+let monkey = Obj.getTriangles "Monkey.obj" (Vec3.newVec3 3. 1. ~-.1.2) material_monkey
 
 let shapes = [
-    ( material_ground, Shape.Sphere { centre = Vec3.newVec3 0. ~-.100.5 ~-.1.; radius = 100.});
-    ( material_centre, Shape.Sphere { centre = Vec3.newVec3 0. 0. ~-.1.2; radius = 0.5});
-    ( material_left, Shape.Sphere { centre = Vec3.newVec3 ~-.1. 0. ~-.1.; radius = 0.5});
-    ( material_right, Shape.Sphere { centre = Vec3.newVec3 1. 0. ~-.1.; radius = 0.5})
-]
+    Shape.createSphere (Vec3.newVec3 0. ~-.100.5 ~-.1.) 100. material_ground;
+    Shape.createSphere (Vec3.newVec3 0. 0. ~-.1.2) 0.5 material_centre;
+    Shape.createSphere (Vec3.newVec3 ~-.1. 0. ~-.1.) 0.5 material_left;
+    Shape.createSphere (Vec3.newVec3 1. 0. ~-.1.) 0.5 material_right;
+    Shape.createTriangle (Vec3.newVec3 0. 2. 1.) (Vec3.newVec3 1. 0. 1.) (Vec3.newVec3 ~-.1. 0. 1.) (Vec3.newVec3 0. 0. ~-.1.) material_triangle
+] @ ball @ monkey
 
-let generateRay origin xPercent yPercent =
+let generateRay xPercent yPercent =
     let hPixelSizeX = 0.5 *. viewportWidth /. (float_of_int imageWidth) in
     let hPixelSizeY = 0.5 *. viewportHeight /. (float_of_int imageHeight) in
 
-    let x = Vec3.lerp (Vec3.newVec3 left 0. 0.) (Vec3.newVec3 right 0. 0.) xPercent in
-    let y = Vec3.lerp (Vec3.newVec3 0. top 0.) (Vec3.newVec3 0. bottom 0.) yPercent in
-    let z = Vec3.scalar forward viewportDistance in
+    let xOffset = Vec3.lerp leftBound rightBound xPercent in
+    let yOffset = Vec3.lerp upperBound lowerBound yPercent in
+    let depth = Vec3.scalar forward viewportDistance in
 
     let rX = (~-.hPixelSizeX) +. Random.float (2. *. hPixelSizeX) in
     let rY = (~-.hPixelSizeY) +. Random.float (2. *. hPixelSizeY) in
 
     let offset = Vec3.newVec3 rX rY 0. in
-    let dir = (Vec3.addM [x; y; z; offset]) in
+    let dir = (Vec3.addM [xOffset; yOffset; depth; offset]) in
 
-    Ray.newRay origin (Vec3.norm dir)
+    Ray.newRay cameraPosition (Vec3.norm dir)
 
 let ppmHeader =
     Printf.sprintf "P3\n%d %d\n255" imageWidth imageHeight
@@ -82,7 +112,7 @@ let rec getRayColour ray currentDepth =
 let perPixel row col =
     let percentX = (float_of_int col) /. (float_of_int imageWidth) in
     let percentY = (float_of_int row) /. (float_of_int imageHeight) in
-    let rays = List.init samples (fun _ -> generateRay origin percentX percentY) in
+    let rays = List.init samples (fun _ -> generateRay percentX percentY) in
     let colours = List.map (fun x -> getRayColour x 0) rays in
     let total = List.fold_left (fun x y -> Vec3.add x y) Vec3.vec3Zero colours in
     Vec3.scalar total (1. /. (float_of_int samples))
@@ -92,6 +122,6 @@ let () =
     let getColour r c _ =
         perPixel r c
     in
-    let checkerboard = Pixels.mapPixels getColour pixels in
+    let image = Pixels.mapPixels getColour pixels in
     Printf.printf "%s \n" (ppmHeader);
-    Pixels.printPixels checkerboard
+    Pixels.printPixels image

@@ -1,8 +1,12 @@
 open Vec3
 
 module Pixels = struct
+    (* let mapPixels f pixels = *)
+    (*     Array.mapi (fun r rows -> Array.mapi (fun c p -> f r c p) rows) pixels *)
+
     let mapPixels f pixels =
-        Array.mapi (fun r rows -> Array.mapi (fun c p -> f r c p) rows) pixels
+        let nc = 12 in
+        Parmap.array_parmapi ~ncores: 3 ~keeporder: true (fun r rows -> Parmap.array_parmapi ~ncores: nc ~keeporder: true (fun c p -> f r c p) rows) pixels
 
     let createPixelArraySpecific w h c =
         fun () -> Array.make_matrix h w c

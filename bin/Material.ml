@@ -13,10 +13,23 @@ module Material = struct
         fuzz : float
     }
 
+    type materialDielectric = {
+        refraction : float
+    }
+
     type materialType =
         | None
         | Lambertian of materialGeneral
         | Metal of materialGeneral * materialMetal
+        | Dielectric of materialGeneral * materialDielectric
+
+    let nullMaterialGeneral =
+        fun () -> { albedo = Vec3.vec3Zero; }
+
+    let reflectance cosine refraction =
+        let r0 = (1. -. refraction) /. (1. +. refraction) in
+        let r02 = r0 *. r0 in
+        r02 +. (1. -. r02) *. (Float.pow (1. -. cosine) 5.)
 
     let scatter material ray (hit : HitRecord.hitRecord) : (Vec3.vec3 * Ray.ray) option =
         match material with
@@ -41,4 +54,29 @@ module Material = struct
                 Some (g.albedo, scattered)
             else
                 None
+        | Dielectric (_, d) ->
+            let attenuation = Vec3.vec3One in
+            let ri =
+                if hit.frontFace then
+                    1. /. d.refraction
+                else
+                    d.refraction
+                in
+
+            let unitDir = Vec3.norm ray.direction in
+            let cosTheta = Float.min (Vec3.dot (Vec3.negate unitDir) hit.normal) 1.0 in
+            let sinTheta = sqrt (1. -. (cosTheta *. cosTheta)) in
+
+            let cannotRefract = (ri *. sinTheta) > 1. in
+            let direction =
+                if cannotRefract || ((reflectance cosTheta ri) > (Random.float 1.))then
+                    Vec3.reflect unitDir hit.normal
+                else
+                    Vec3.refract unitDir hit.normal ri
+                in
+            let scattered =
+                Ray.newRay hit.pos direction in
+            Some (attenuation, scattered)
+
+
 end

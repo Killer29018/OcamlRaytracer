@@ -1,4 +1,4 @@
 (executable
  (public_name Raytracer_V2)
  (name main)
- (libraries Raytracer_V2))
+ (libraries Raytracer_V2 parmap))

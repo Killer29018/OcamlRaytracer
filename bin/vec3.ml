@@ -17,11 +17,20 @@ module Vec3 = struct
         let b = int_of_float ((linearToGamma x.z) *. 255.) in
         Printf.sprintf "%d %d %d" r g b
 
+    let string_of_vec3_full x =
+        Printf.sprintf "%.3f %.3f %.3f" x.x x.y x.z
+
     let newVec3 x y z = { x = x; y = y; z = z }
 
     let vec3Zero = newVec3 0. 0. 0.
+    let vec3One = newVec3 1. 1. 1.
+    let vec3OneX = newVec3 1. 0. 0.
+    let vec3OneY = newVec3 0. 1. 0.
+    let vec3OneZ = newVec3 0. 0. 1.
 
     let scalar r s = { x = r.x *. s; y = r.y *. s; z = r.z *. s }
+
+    let invert x = { x = 1. /. x.x; y = 1. /. x.y; z = 1. /. x.z }
 
     let add a b =
         { x = a.x +. b.x; y = a.y +. b.y; z = a.z +. b.z }
@@ -39,6 +48,9 @@ module Vec3 = struct
         { x = a.x *. b.x; y = a.y *. b.y; z = a.z *. b.z }
 
     let dot a b = a.x *. b.x +. a.y *. b.y +. a.z *. b.z
+
+    let cross a b =
+        { x = a.y *. b.z -. a.z *. b.y; y = a.z *. b.x -. a.x *. b.z; z = a.x *. b.y -. a.y *. b.x}
 
     let lerp a b t =
         let x = a.x *. (1. -. t) +. b.x *. t in
@@ -64,9 +76,27 @@ module Vec3 = struct
     let reflect a n =
         sub (a) (scalar n (2. *. dot a n))
 
+    let refract a n eta =
+        let cos_theta = Float.min (dot (negate a) n) 1. in
+        let r_out_perp = scalar (add a (scalar n cos_theta)) eta in
+        let r_out_para = scalar n (~-.(sqrt (Float.abs (1. -. (mag_squared r_out_perp))))) in
+        add r_out_perp r_out_para
+
     let nearZero x =
         let s = 1e-8 in
         Float.abs x.x < s && Float.abs x.y < s && Float.abs x.z < s
+
+    let minComp a b =
+        { x = min a.x b.x; y = min a.y b.y; z = min a.z b.z }
+
+    let minComp3 a b c =
+        minComp a (minComp b c)
+
+    let maxComp a b =
+        { x = max a.x b.x; y = max a.y b.y; z = max a.z b.z }
+
+    let maxComp3 a b c =
+        maxComp a (maxComp b c)
 
     let randomVec3 =
         fun () ->
