@@ -1,0 +1,4 @@
+(executable
+ (public_name Raytracer)
+ (name main)
+ (libraries Raytracer))
