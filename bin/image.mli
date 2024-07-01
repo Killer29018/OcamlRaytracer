@@ -5,12 +5,13 @@ module Image : sig
     type 'a image = {
         width: int;
         height: int;
-        image: 'a array array
+        data: 'a array array
     }
 
-    val image_map : ('a -> 'b) -> 'a image -> 'b image
+    val map : ('a -> 'b) -> 'a image -> 'b image
+    val mapi : ('a -> int -> int -> 'b) -> 'a image -> 'b image
 
-    val image_iter : ('a -> unit) -> 'a image -> unit
+    val iter : ('a -> unit) -> 'a image -> unit
 
     val generate_vec3_image : int -> int -> Vec3.vec3 image
 
