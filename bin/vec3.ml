@@ -43,6 +43,9 @@ module Vec3 = struct
     let comp_mul_list xs =
         List.fold_left (comp_mul) one xs
 
+    let comp_abs x =
+        { x = Float.abs x.x; y = Float.abs x.y; z = Float.abs x.z }
+
     let mag_squared v =
         dot v v
 

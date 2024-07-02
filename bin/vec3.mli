@@ -25,6 +25,8 @@ module Vec3 : sig
     val comp_mul : vec3 -> vec3 -> vec3
     val comp_mul_list : vec3 list -> vec3
 
+    val comp_abs : vec3 -> vec3
+
     val mag_squared : vec3 -> float
     val mag : vec3 -> float
     val norm : vec3 -> vec3

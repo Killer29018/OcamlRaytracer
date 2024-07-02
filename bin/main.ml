@@ -1,5 +1,6 @@
 open Scene
 open Shape
+open Object
 open Vec3
 
 (*
@@ -35,13 +36,14 @@ let checkerboard _p x y =
 
 let () =
     let sphere = Shape.create_sphere (Vec3.newV 0. 0. 2.) 1. in
+    let obj = Object.create sphere in
 
-    let scene = Scene.create_null_definition () in
-    let scene = Scene.add_object scene sphere in
+    let scene = Scene.create_null_definition_with_objects [ obj ] in
     scene.name <- "output";
     scene.image_width <- 200;
     scene.image_height <- 200;
     scene.viewport_width <- 2.;
     scene.viewport_height <- 2.;
     scene.viewport_depth <- 1.;
+    scene.max_depth <- 2;
     Scene.render_scene scene

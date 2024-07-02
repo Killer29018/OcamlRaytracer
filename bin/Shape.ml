@@ -36,19 +36,24 @@ module Shape = struct
         let a = Vec3.dot r.direction r.direction in
         let half_b = Vec3.dot r.direction o_c in
         let c = (Vec3.dot o_c o_c) -. (s.radius *. s.radius) in
-        let disc = (half_b *. half_b) -. (a *. c) in
+        let disc = sqrt ((half_b *. half_b) -. (a *. c)) in
         if disc < 0. then
             HitRecord.Miss
         else
-            let pos_t = (~-.(half_b) +. disc) /. a in
-            let neg_t = (~-.(half_b) -. disc) /. a in
-            if pos_t < 0. then
+            let t =
+                if (~-.half_b -. disc) > 0. then
+                    (~-.half_b -. disc) /. a
+                else if (~-.half_b +. disc) > 0. then
+                    (~-.half_b +. disc) /. a
+                else
+                    ~-.1.
+            in
+            if t <= 0. then
                 HitRecord.Miss
-        else
-            let t = if neg_t > 0. then neg_t else pos_t in
-            let pos = Ray.calculate_position r t in
-            let (normal, front_face) = get_normal_and_front_face (Sphere s) pos r.direction in
-            HitRecord.Hit (HitRecord.create_hit_record_tpnf t pos normal front_face)
+            else
+                let pos = Ray.calculate_position r t in
+                let (normal, front_face) = get_normal_and_front_face (Sphere s) pos r.direction in
+                HitRecord.Hit (HitRecord.create_hit_record_tpnf t pos normal front_face)
 
     let check_collision r shape =
         match shape with
