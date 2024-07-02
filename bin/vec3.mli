@@ -5,10 +5,10 @@ module Vec3 : sig
         z: float
     }
 
-    val new_vec3 : float -> float -> float -> vec3
+    val newV : float -> float -> float -> vec3
 
-    val vec3_zero : vec3
-    val vec3_one : vec3
+    val zero : vec3
+    val one : vec3
 
     val string_of_vec3 : vec3 -> string
 
@@ -24,4 +24,10 @@ module Vec3 : sig
 
     val comp_mul : vec3 -> vec3 -> vec3
     val comp_mul_list : vec3 list -> vec3
+
+    val mag_squared : vec3 -> float
+    val mag : vec3 -> float
+    val norm : vec3 -> vec3
+
+    val negate : vec3 -> vec3
 end

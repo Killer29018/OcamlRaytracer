@@ -5,11 +5,11 @@ module Vec3 = struct
         z: float
     }
 
-    let new_vec3 x y z =
+    let newV x y z =
         { x = x; y = y; z = z }
 
-    let vec3_zero = new_vec3 0. 0. 0.
-    let vec3_one = new_vec3 1. 1. 1.
+    let zero = newV 0. 0. 0.
+    let one = newV 1. 1. 1.
 
     let string_of_vec3 x =
         Printf.sprintf "%f %f %f" x.x x.y x.z
@@ -18,13 +18,13 @@ module Vec3 = struct
         { x = a.x +. b.x; y = a.y +. b.y; z = a.z +. b.z }
 
     let add_list xs =
-        List.fold_left (add) vec3_zero xs
+        List.fold_left (add) zero xs
 
     let sub a b =
         { x = a.x -. b.x; y = a.y -. b.y; z = a.z -. b.z }
 
     let sub_list xs =
-        List.fold_left (sub) vec3_zero xs
+        List.fold_left (sub) zero xs
 
     let dot a b =
         a.x *. b.x +. a.y *. b.y +. a.z *. b.z
@@ -41,5 +41,17 @@ module Vec3 = struct
         { x = a.x *. b.x; y = a.y *. b.y; z = a.z *. b.z }
 
     let comp_mul_list xs =
-        List.fold_left (comp_mul) vec3_one xs
+        List.fold_left (comp_mul) one xs
+
+    let mag_squared v =
+        dot v v
+
+    let mag v =
+        sqrt (mag_squared v)
+
+    let norm v =
+        scalar v (1. /. (mag v))
+
+    let negate v =
+        scalar v ~-.1.
 end
