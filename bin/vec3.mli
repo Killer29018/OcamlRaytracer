@@ -32,4 +32,9 @@ module Vec3 : sig
     val norm : vec3 -> vec3
 
     val negate : vec3 -> vec3
+
+    val random_unit : (unit -> vec3)
+    val random_bounds : float -> float -> vec3
+
+    val near_zero : vec3 -> bool
 end

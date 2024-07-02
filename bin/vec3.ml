@@ -57,4 +57,21 @@ module Vec3 = struct
 
     let negate v =
         scalar v ~-.1.
+
+    let random_unit =
+        fun () ->
+            let x = Random.float 1. in
+            let y = Random.float 1. in
+            let z = Random.float 1. in
+            norm (newV x y z)
+
+    let random_bounds min max =
+        let x = min +. (Random.float (max -. min)) in
+        let y = min +. (Random.float (max -. min)) in
+        let z = min +. (Random.float (max -. min)) in
+        newV x y z
+
+    let near_zero v =
+        let eps = 1e-8 in
+        (mag_squared v) < eps
 end

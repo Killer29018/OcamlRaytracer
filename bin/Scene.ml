@@ -49,7 +49,7 @@ module Scene = struct
         def
 
     let miss_colour _ray =
-        Vec3.newV 1. 1. 1.
+        Vec3.newV 0.8 0.8 1.0
 
     let rec calculate_colour scene ray depth =
         if depth > scene.max_depth then
