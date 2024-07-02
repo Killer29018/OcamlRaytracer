@@ -35,15 +35,17 @@ let checkerboard _p x y =
 *)
 
 let () =
-    let sphere = Shape.create_sphere (Vec3.newV 0. 0. 2.) 1. in
-    let obj = Object.create sphere in
+    let sphere1 = Shape.create_sphere (Vec3.newV ~-.1. 0. 2.) 1. in
+    let sphere2 = Shape.create_sphere (Vec3.newV 1. 0. 2.) 1. in
+    let obj1 = Object.create sphere1 in
+    let obj2 = Object.create sphere2 in
 
-    let scene = Scene.create_null_definition_with_objects [ obj ] in
+    let scene = Scene.create_null_definition_with_objects [ obj1; obj2 ] in
     scene.name <- "output";
     scene.image_width <- 200;
     scene.image_height <- 200;
     scene.viewport_width <- 2.;
     scene.viewport_height <- 2.;
     scene.viewport_depth <- 1.;
-    scene.max_depth <- 2;
+    scene.max_depth <- 4;
     Scene.render_scene scene

@@ -29,7 +29,7 @@ module Scene = struct
             viewport_width = 0.;
             viewport_height = 0.;
             viewport_depth = 0.;
-            max_depth = 0;
+            max_depth = 1;
         }
 
     let create_null_definition_with_objects objs =
@@ -41,7 +41,7 @@ module Scene = struct
             viewport_width = 0.;
             viewport_height = 0.;
             viewport_depth = 0.;
-            max_depth = 0;
+            max_depth = 1;
         }
 
     let add_object def o =

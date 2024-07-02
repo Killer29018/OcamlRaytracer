@@ -23,12 +23,12 @@ module Viewport = struct
             viewport_depth = depth
         }
 
-    let get_components v i =
+    let get_components v (i : 'a Image.image) =
         let half_width = v.viewport_width /. 2. in
         let half_height = v.viewport_height /. 2. in
         let top_left = Vec3.newV (~-.half_width) (~-.half_height) (v.viewport_depth) in
-        let delta_right = Vec3.newV (v.viewport_width /. (float_of_int i.Image.width)) 0. 0. in
-        let delta_down = Vec3.newV 0. (v.viewport_height /. (float_of_int i.Image.height)) 0. in
+        let delta_right = Vec3.newV (v.viewport_width /. (float_of_int i.width)) 0. 0. in
+        let delta_down = Vec3.newV 0. (v.viewport_height /. (float_of_int i.height)) 0. in
         (top_left, delta_right, delta_down)
 
     let string_of_viewport v =

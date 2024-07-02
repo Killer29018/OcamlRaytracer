@@ -19,7 +19,7 @@ module Image = struct
         { width = i.width;
           height = i.height;
           data = Array.mapi
-                  (fun xp r -> Array.mapi (fun yp x -> f x xp yp) r)
+                  (fun yp r -> Array.mapi (fun xp x -> f x xp yp) r)
                   i.data }
 
     let iter f i =
@@ -36,7 +36,7 @@ module Image = struct
             init i.data
 
     let generate_vec3_image w h =
-        { width = w; height = h; data = Array.make_matrix w h Vec3.zero }
+        { width = w; height = h; data = Array.make_matrix h w Vec3.zero }
 
     let pixel_image_of_vec3_image v =
           map Pixels.pixel_of_vec3 v
