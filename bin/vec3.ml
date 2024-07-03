@@ -5,19 +5,19 @@ module Vec3 = struct
         z: float
     }
 
-    let newV x y z =
+    let create x y z =
         { x = x; y = y; z = z }
 
-    let zero = newV 0. 0. 0.
-    let one = newV 1. 1. 1.
+    let zero = create 0. 0. 0.
+    let one = create 1. 1. 1.
 
-    let p_x = newV 1. 0. 0.
-    let p_y = newV 0. 1. 0.
-    let p_z = newV 0. 0. 1.
+    let p_x = create 1. 0. 0.
+    let p_y = create 0. 1. 0.
+    let p_z = create 0. 0. 1.
 
-    let n_x = newV ~-.1. 0. 0.
-    let n_y = newV 0. ~-.1. 0.
-    let n_z = newV 0. 0. ~-.1.
+    let n_x = create ~-.1. 0. 0.
+    let n_y = create 0. ~-.1. 0.
+    let n_z = create 0. 0. ~-.1.
 
     let string_of_vec3 x =
         Printf.sprintf "%f %f %f" x.x x.y x.z
@@ -71,13 +71,13 @@ module Vec3 = struct
             let x = Random.float 1. in
             let y = Random.float 1. in
             let z = Random.float 1. in
-            norm (newV x y z)
+            norm (create x y z)
 
     let random_bounds min max =
         let x = min +. (Random.float (max -. min)) in
         let y = min +. (Random.float (max -. min)) in
         let z = min +. (Random.float (max -. min)) in
-        newV x y z
+        create x y z
 
     let near_zero v =
         let eps = 1e-8 in

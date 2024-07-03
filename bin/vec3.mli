@@ -5,7 +5,7 @@ module Vec3 : sig
         z: float
     }
 
-    val newV : float -> float -> float -> vec3
+    val create : float -> float -> float -> vec3
 
     val zero : vec3
     val one : vec3
