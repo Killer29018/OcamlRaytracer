@@ -4,9 +4,9 @@ open Camera
 
 module Viewport : sig
     type viewport_T = {
-        viewport_width: float;
-        viewport_height: float;
-        viewport_depth: float
+        width: float;
+        height: float;
+        depth: float
     }
 
     val create_null : (unit -> viewport_T)
