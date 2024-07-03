@@ -3,11 +3,18 @@ open Camera
 open Image
 
 module Viewport = struct
-    type viewport = {
+    type viewport_T = {
         viewport_width: float;
         viewport_height: float;
         viewport_depth: float
     }
+
+    let create_null =
+        fun () -> {
+            viewport_width = 0.;
+            viewport_height = 0.;
+            viewport_depth = 0.;
+        }
 
     let create width height depth =
         {
@@ -18,6 +25,23 @@ module Viewport = struct
 
     let create_aspect width depth aspect =
         let height = width /. aspect in
+        {
+            viewport_width = width;
+            viewport_height = height;
+            viewport_depth = depth
+        }
+
+    let create_vfov width height vfov =
+        let depth = (tan (vfov /. 2.)) /. height in
+        {
+            viewport_width = width;
+            viewport_height = height;
+            viewport_depth = depth
+        }
+
+    let create_vfov_aspect width aspect vfov =
+        let height = width /. aspect in
+        let depth = (tan (vfov /. 2.)) /. height in
         {
             viewport_width = width;
             viewport_height = height;

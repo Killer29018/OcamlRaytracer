@@ -4,6 +4,7 @@ open Shape
 open Object
 open Material
 open Vec3
+open Viewport
 
 (*
 +x : right
@@ -25,16 +26,16 @@ let () =
     let obj2 = Object.create sphere2 mat2 in
     let obj3 = Object.create sphere_ground ground_material in
 
-    let camera = Camera.create (Vec3.newV 0. 0. ~-.1.) (Vec3.newV 0. 0. 2.) in
+    let viewport = Viewport.create_vfov_aspect 2. 1. (Float.pi /. 2.) in
+
+    let camera = Camera.create (Vec3.newV 0. 0. ~-.0.1) (Vec3.newV 0. 0. 2.) in
     Printf.printf "%s\n" (Camera.string_of_camera camera);
 
     let scene = Scene.create_null_definition_with_objects [ obj1; obj2; obj3 ] in
     scene.name <- "output";
     scene.image_width <- 200;
     scene.image_height <- 200;
-    scene.viewport_width <- 2.;
-    scene.viewport_height <- 2.;
-    scene.viewport_depth <- 1.;
+    scene.viewport <- viewport;
     scene.camera <- camera;
     scene.max_depth <- 200;
     Scene.render_scene scene

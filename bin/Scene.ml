@@ -14,9 +14,7 @@ module Scene = struct
         mutable image_width: int;
         mutable image_height: int;
 
-        mutable viewport_width: float;
-        mutable viewport_height: float;
-        mutable viewport_depth: float;
+        mutable viewport: Viewport.viewport_T;
 
         mutable camera: Camera.camera_T;
 
@@ -29,9 +27,7 @@ module Scene = struct
             objects = [||];
             image_width = 0;
             image_height = 0;
-            viewport_width = 0.;
-            viewport_height = 0.;
-            viewport_depth = 0.;
+            viewport = Viewport.create_null ();
             camera = Camera.create_null ();
             max_depth = 1;
         }
@@ -42,9 +38,7 @@ module Scene = struct
             objects = Array.of_list objs;
             image_width = 0;
             image_height = 0;
-            viewport_width = 0.;
-            viewport_height = 0.;
-            viewport_depth = 0.;
+            viewport = Viewport.create_null ();
             camera = Camera.create_null ();
             max_depth = 1;
         }
@@ -94,9 +88,8 @@ module Scene = struct
 
     let render_scene scene =
         let origin = Vec3.zero in
-        let viewport = Viewport.create scene.viewport_width scene.viewport_height scene.viewport_depth in
         let image = Image.generate_vec3_image scene.image_width scene.image_height in
-        let (top_left, right, down) = Viewport.get_components viewport image scene.camera in
+        let (top_left, right, down) = Viewport.get_components scene.viewport image scene.camera in
         let output_image = Image.mapi (fun _c x y -> per_pixel x y scene origin top_left right down) image in
 
         Image.pixel_image_to_file scene.name (Image.pixel_image_of_vec3_image output_image)
