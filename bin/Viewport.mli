@@ -1,5 +1,6 @@
 open Vec3
 open Image
+open Camera
 
 module Viewport : sig
     type viewport = {
@@ -12,7 +13,7 @@ module Viewport : sig
 
     val create_aspect : float -> float -> float -> viewport
 
-    val get_components : viewport -> 'a Image.image -> (Vec3.vec3 * Vec3.vec3 * Vec3.vec3)
+    val get_components : viewport -> 'a Image.image -> Camera.camera_T -> (Vec3.vec3 * Vec3.vec3 * Vec3.vec3)
 
     val string_of_viewport : viewport -> string
 end

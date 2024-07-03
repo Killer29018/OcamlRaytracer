@@ -11,6 +11,14 @@ module Vec3 = struct
     let zero = newV 0. 0. 0.
     let one = newV 1. 1. 1.
 
+    let p_x = newV 1. 0. 0.
+    let p_y = newV 0. 1. 0.
+    let p_z = newV 0. 0. 1.
+
+    let n_x = newV ~-.1. 0. 0.
+    let n_y = newV 0. ~-.1. 0.
+    let n_z = newV 0. 0. ~-.1.
+
     let string_of_vec3 x =
         Printf.sprintf "%f %f %f" x.x x.y x.z
 

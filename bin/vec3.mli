@@ -10,6 +10,14 @@ module Vec3 : sig
     val zero : vec3
     val one : vec3
 
+    val p_x : vec3
+    val p_y : vec3
+    val p_z : vec3
+
+    val n_x : vec3
+    val n_y : vec3
+    val n_z : vec3
+
     val string_of_vec3 : vec3 -> string
 
     val add : vec3 -> vec3 -> vec3

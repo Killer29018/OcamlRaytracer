@@ -1,4 +1,5 @@
 open Viewport
+open Camera
 open Image
 open Vec3
 open Object
@@ -17,6 +18,8 @@ module Scene = struct
         mutable viewport_height: float;
         mutable viewport_depth: float;
 
+        mutable camera: Camera.camera_T;
+
         mutable max_depth: int;
     }
 
@@ -29,6 +32,7 @@ module Scene = struct
             viewport_width = 0.;
             viewport_height = 0.;
             viewport_depth = 0.;
+            camera = Camera.create_null ();
             max_depth = 1;
         }
 
@@ -41,6 +45,7 @@ module Scene = struct
             viewport_width = 0.;
             viewport_height = 0.;
             viewport_depth = 0.;
+            camera = Camera.create_null ();
             max_depth = 1;
         }
 
@@ -91,7 +96,7 @@ module Scene = struct
         let origin = Vec3.zero in
         let viewport = Viewport.create scene.viewport_width scene.viewport_height scene.viewport_depth in
         let image = Image.generate_vec3_image scene.image_width scene.image_height in
-        let (top_left, right, down) = Viewport.get_components viewport image in
+        let (top_left, right, down) = Viewport.get_components viewport image scene.camera in
         let output_image = Image.mapi (fun _c x y -> per_pixel x y scene origin top_left right down) image in
 
         Image.pixel_image_to_file scene.name (Image.pixel_image_of_vec3_image output_image)

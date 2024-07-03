@@ -1,4 +1,5 @@
 open Object
+open Camera
 
 module Scene : sig
     type scene_definition = {
@@ -11,6 +12,8 @@ module Scene : sig
         mutable viewport_width: float;
         mutable viewport_height: float;
         mutable viewport_depth: float;
+
+        mutable camera: Camera.camera_T;
 
         mutable max_depth: int;
     }
