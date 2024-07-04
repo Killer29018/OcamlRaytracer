@@ -32,9 +32,9 @@ let () =
     let image_width = 350 in
     let image_height = int_of_float ((float_of_int image_width) /. aspect) in
 
-    let viewport = Viewport.create_vfov_aspect 2. aspect (Float.pi /. 2.) in
+    let viewport = Viewport.create_vfov_aspect 2. aspect (Float.pi /. 1.5) in
 
-    let camera = Camera.create (Vec3.create 0. 0. ~-.0.5) (Vec3.create 0. 0. 1.2) in
+    let camera = Camera.create (Vec3.create 0. 0. 2.5) (Vec3.create 0. 0. 1.2) in
     Printf.printf "%s\n" (Camera.string_of_camera camera);
 
     let scene = Scene.create_null_definition_with_objects [ object_ground; (* object_left; *) object_centre; (* object_right *) ] in

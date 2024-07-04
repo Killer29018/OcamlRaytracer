@@ -105,7 +105,7 @@ module Scene = struct
         final_colour
 
     let render_scene scene =
-        let origin = Vec3.zero in
+        let origin = scene.camera.pos in
         let image = Image.generate_vec3_image scene.image_width scene.image_height in
         let (top_left, right, down) = Viewport.get_components scene.viewport image scene.camera in
         let output_image = Image.mapi (fun _c x y -> per_pixel x y scene origin top_left right down) image in
