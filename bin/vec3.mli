@@ -45,4 +45,6 @@ module Vec3 : sig
     val random_bounds : float -> float -> vec3
 
     val near_zero : vec3 -> bool
+
+    val lerp : vec3 -> vec3 -> float -> vec3
 end

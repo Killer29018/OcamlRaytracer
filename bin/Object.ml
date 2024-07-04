@@ -14,5 +14,7 @@ module Object = struct
         Shape.check_collision r o.shape
 
     let scatter_ray o r h =
+        (* let colour = Vec3.scalar (Vec3.add h.normal Vec3.one) 0.5 in *)
+        (* Some (colour, r) *)
         Material.scatter o.material r h
 end

@@ -82,4 +82,7 @@ module Vec3 = struct
     let near_zero v =
         let eps = 1e-8 in
         (mag_squared v) < eps
+
+    let lerp a b t =
+        add (scalar a (1. -. t)) (scalar b t)
 end

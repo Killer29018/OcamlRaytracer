@@ -8,6 +8,7 @@ module Pixels : sig
     }
 
     val pixel_of_vec3 : Vec3.vec3 -> pixel
+    val pixel_of_vec3_gamma : Vec3.vec3 -> pixel
 
     val string_of_pixel : pixel -> string
 end

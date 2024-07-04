@@ -41,9 +41,9 @@ module Shape = struct
             HitRecord.Miss
         else
             let t =
-                if (~-.half_b -. disc) > 0. then
+                if (~-.half_b -. disc) > 0.001 then
                     (~-.half_b -. disc) /. a
-                else if (~-.half_b +. disc) > 0. then
+                else if (~-.half_b +. disc) > 0.001 then
                     (~-.half_b +. disc) /. a
                 else
                     ~-.1.

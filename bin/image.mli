@@ -18,6 +18,7 @@ module Image : sig
     val generate_vec3_image : int -> int -> Vec3.vec3 image
 
     val pixel_image_of_vec3_image : Vec3.vec3 image -> Pixels.pixel image
+    val pixel_image_of_vec3_image_gamma : Vec3.vec3 image -> Pixels.pixel image
 
     val string_of_pixel_image : Pixels.pixel image -> string
     val string_of_vec3_image : Vec3.vec3 image -> string

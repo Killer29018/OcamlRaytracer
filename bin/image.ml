@@ -41,6 +41,9 @@ module Image = struct
     let pixel_image_of_vec3_image v =
           map Pixels.pixel_of_vec3 v
 
+    let pixel_image_of_vec3_image_gamma v =
+          map Pixels.pixel_of_vec3_gamma v
+
     let string_of_pixel_image image =
         fold (fun acc x -> acc ^ (Pixels.string_of_pixel x) ^ "\n") "" image
 

@@ -15,6 +15,7 @@ module Scene : sig
         mutable camera: Camera.camera_T;
 
         mutable max_depth: int;
+        mutable sample_count: int;
     }
 
     val create_null_definition : (unit -> scene_definition)
