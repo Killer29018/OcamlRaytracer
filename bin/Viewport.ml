@@ -32,7 +32,7 @@ module Viewport = struct
         }
 
     let create_vfov width height vfov =
-        let depth = (tan (vfov /. 2.)) /. height in
+        let depth = height /. (tan (vfov /. 2.)) in
         {
             width = width;
             height = height;
@@ -41,7 +41,7 @@ module Viewport = struct
 
     let create_vfov_aspect width aspect vfov =
         let height = width /. aspect in
-        let depth = (tan (vfov /. 2.)) /. height in
+        let depth = height /. (tan (vfov /. 2.)) in
         {
             width = width;
             height = height;

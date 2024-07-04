@@ -46,5 +46,7 @@ module Vec3 : sig
 
     val near_zero : vec3 -> bool
 
+    val reflect : vec3 -> vec3 -> vec3
+
     val lerp : vec3 -> vec3 -> float -> vec3
 end

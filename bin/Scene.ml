@@ -52,14 +52,14 @@ module Scene = struct
 
     let miss_colour (ray : Ray.ray) =
         let direction = Vec3.norm ray.direction in
-        let a = 0.5 *. (direction.y +. 1.) in
+        let a = Float.abs direction.y in
         let lower_col = Vec3.create 1. 1. 1. in
         let higher_col = Vec3.create 0.5 0.7 1. in
         Vec3.lerp lower_col higher_col a
 
     let rec calculate_colour scene ray depth =
         if depth <= 0 then
-            Vec3.one
+            Vec3.zero
         else
             let collisions = Array.mapi (fun i o -> (i, Object.check_collision o ray)) scene.objects in
             let (index, closest) = Array.fold_left
@@ -81,7 +81,7 @@ module Scene = struct
                 let result = Object.scatter_ray obj ray h in
                 match result with
                 | Some (c, r) ->
-                    Vec3.comp_mul c (Vec3.scalar (calculate_colour scene r (depth - 1)) 0.5)
+                    Vec3.comp_mul c (calculate_colour scene r (depth - 1))
                 | None ->
                     Vec3.zero
 

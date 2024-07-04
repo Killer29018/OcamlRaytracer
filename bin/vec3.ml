@@ -83,6 +83,9 @@ module Vec3 = struct
         let eps = 1e-8 in
         (mag_squared v) < eps
 
+    let reflect v n =
+        sub v (scalar n (2. *. (dot v n)))
+
     let lerp a b t =
         add (scalar a (1. -. t)) (scalar b t)
 end
