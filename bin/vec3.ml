@@ -92,6 +92,12 @@ module Vec3 = struct
     let reflect v n =
         sub v (scalar n (2. *. (dot v n)))
 
+    let refract uv n e =
+        let cos_theta = min (dot (negate uv) n) 1. in
+        let r_out_perp = scalar (add uv (scalar n cos_theta)) e in
+        let r_out_para = scalar n (~-.(sqrt (Float.abs (1. -. (mag_squared r_out_perp))))) in
+        add r_out_perp r_out_para
+
     let lerp a b t =
         add (scalar a (1. -. t)) (scalar b t)
 end

@@ -16,6 +16,9 @@ module Viewport = struct
             depth = 0.;
         }
 
+    let radians_of_deg x =
+        Float.pi *. (x /. 180.)
+
     let create width height depth =
         {
             width = width;
@@ -32,7 +35,16 @@ module Viewport = struct
         }
 
     let create_vfov width height vfov =
-        let depth = height /. (tan (vfov /. 2.)) in
+        let depth = height /. (tan (radians_of_deg vfov /. 2.)) in
+        {
+            width = width;
+            height = height;
+            depth = depth
+        }
+
+    let create_vfov_depth_aspect vfov depth aspect=
+        let height = depth *. (tan (radians_of_deg vfov /. 2.)) *. 2. in
+        let width = height *. aspect in
         {
             width = width;
             height = height;
@@ -41,7 +53,7 @@ module Viewport = struct
 
     let create_vfov_aspect width aspect vfov =
         let height = width /. aspect in
-        let depth = height /. (tan (vfov /. 2.)) in
+        let depth = height /. (tan (radians_of_deg vfov /. 2.)) in
         {
             width = width;
             height = height;
