@@ -35,8 +35,7 @@ module Material = struct
             else
                 scatter_direction
         in
-        let ray_position = Vec3.add hit.pos (Vec3.scalar scatter_direction 0.001) in
-        let scattered_ray = Ray.create ray_position scatter_direction in
+        let scattered_ray = Ray.create hit.pos scatter_direction in
         Some (lambertian.albedo, scattered_ray)
 
     let scatter_metal (metal : material_metal) (ray : Ray.ray) (hit : HitRecord.hit_record) =

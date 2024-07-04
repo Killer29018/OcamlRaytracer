@@ -41,8 +41,9 @@ module Vec3 : sig
 
     val negate : vec3 -> vec3
 
-    val random_unit : (unit -> vec3)
     val random_bounds : float -> float -> vec3
+    val random_in_unit_sphere : (unit -> vec3)
+    val random_unit : (unit -> vec3)
 
     val near_zero : vec3 -> bool
 
