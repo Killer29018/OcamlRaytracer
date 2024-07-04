@@ -1,9 +1,10 @@
 open Vec3
+open Misc
 
 module Camera = struct
     type camera_T = {
-        pos: Vec3.vec3;
-        look_at: Vec3.vec3;
+        mutable pos: Vec3.vec3;
+        mutable look_at: Vec3.vec3;
 
         world_up: Vec3.vec3;
         world_front: Vec3.vec3;
@@ -12,6 +13,9 @@ module Camera = struct
         up: Vec3.vec3;
         front: Vec3.vec3;
         right: Vec3.vec3;
+
+        mutable defocus_angle: float;
+        mutable focus_dist: float;
     }
 
     let create_null =
@@ -26,6 +30,9 @@ module Camera = struct
             up = Vec3.zero;
             front = Vec3.zero;
             right = Vec3.zero;
+
+            defocus_angle = 0.;
+            focus_dist = 10.;
         }
 
     let calculate_directions c =
@@ -40,7 +47,9 @@ module Camera = struct
             world_right = c.world_right;
             up = up;
             front = front;
-            right = right
+            right = right;
+            defocus_angle = 0.;
+            focus_dist = 10.;
         }
 
     let create p l =
@@ -55,6 +64,9 @@ module Camera = struct
             up = Vec3.zero;
             front = Vec3.zero;
             right = Vec3.zero;
+
+            defocus_angle = 0.;
+            focus_dist = 10.;
         } in
         calculate_directions c
 
@@ -71,11 +83,17 @@ module Camera = struct
             up = Vec3.zero;
             front = Vec3.zero;
             right = Vec3.zero;
+
+            defocus_angle = 0.;
+            focus_dist = 10.;
         } in
         calculate_directions c
 
+    let get_defocus_radius c =
+        c.focus_dist *. (tan (radians_of_deg (c.defocus_angle /. 2.)))
+
     let string_of_camera c =
-        Printf.sprintf "CAMERA | (%s) | (%s) | [(%s) : (%s) : (%s)] | [(%s) : (%s) : (%s)]"
+        Printf.sprintf "CAMERA | (%s) | (%s) | [(%s) : (%s) : (%s)] | [(%s) : (%s) : (%s)] | %.3f %.3f"
             (Vec3.string_of_vec3 c.pos)
             (Vec3.string_of_vec3 c.look_at)
             (Vec3.string_of_vec3 c.world_up)
@@ -84,4 +102,6 @@ module Camera = struct
             (Vec3.string_of_vec3 c.up)
             (Vec3.string_of_vec3 c.front)
             (Vec3.string_of_vec3 c.right)
+            c.defocus_angle
+            c.focus_dist
 end

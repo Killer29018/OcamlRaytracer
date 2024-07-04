@@ -86,16 +86,31 @@ module Scene = struct
                     Vec3.zero
 
 
-    let per_pixel x y scene origin top_left right_off down_off =
+    let per_pixel x y scene origin top_left right_off down_off defocus_radius =
         let right = Vec3.scalar right_off (float_of_int x) in
         let down = Vec3.scalar down_off (float_of_int y) in
+
+        let defocus_disk_right = Vec3.scalar scene.camera.right defocus_radius in
+        let defocus_disk_up    = Vec3.scalar scene.camera.up    defocus_radius in
+
+        let defocus_disk_sample =
+            fun () ->
+                let p = Vec3.random_in_unit_disk () in
+                Vec3.add_list [ origin; (Vec3.scalar defocus_disk_right p.x); (Vec3.scalar defocus_disk_up p.y) ]
+        in
 
         let generate_ray _ =
             let scalar = Vec3.random_bounds ~-.0.5 0.5 in
             let off_x = Vec3.scalar right_off scalar.x in
             let off_y = Vec3.scalar down_off scalar.y in
             let pos = Vec3.add_list [ top_left; right; down; off_x; off_y ] in
-            Ray.create origin (Vec3.sub pos origin)
+            let ray_origin =
+                if scene.camera.defocus_angle <= 0. then
+                    origin
+                else
+                    defocus_disk_sample ()
+            in
+            Ray.create ray_origin (Vec3.sub pos ray_origin)
         in
 
         let sample_power = 1. /. (float_of_int scene.sample_count) in
@@ -108,7 +123,8 @@ module Scene = struct
         let origin = scene.camera.pos in
         let image = Image.generate_vec3_image scene.image_width scene.image_height in
         let (top_left, right, down) = Viewport.get_components scene.viewport image scene.camera in
-        let output_image = Image.mapi (fun _c x y -> per_pixel x y scene origin top_left right down) image in
+        let defocus_radius = Camera.get_defocus_radius scene.camera in
+        let output_image = Image.mapi (fun _c x y -> per_pixel x y scene origin top_left right down defocus_radius) image in
 
         Image.pixel_image_to_file scene.name (Image.pixel_image_of_vec3_image_gamma output_image)
 end

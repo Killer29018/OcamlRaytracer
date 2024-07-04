@@ -72,6 +72,16 @@ module Vec3 = struct
         let z = min +. (Random.float (max -. min)) in
         create x y z
 
+    let random_in_unit_disk =
+        fun () ->
+            let v = ref (random_bounds ~-.1. 1.) in
+            v := (create !v.x !v.y 0.);
+            while not ((mag_squared !v) < 1.) do
+                let new_v = random_bounds ~-.1. 1. in
+                let new_v = create new_v.x new_v.y 0. in
+                v := new_v;
+            done; !v
+
     let random_in_unit_sphere =
         fun () ->
             let v = ref (random_bounds ~-.1. 1.) in
@@ -79,7 +89,6 @@ module Vec3 = struct
                 let new_v = random_bounds ~-.1. 1. in
                 v := new_v;
             done; !v
-
 
     let random_unit =
         fun () ->

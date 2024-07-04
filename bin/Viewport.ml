@@ -1,6 +1,7 @@
 open Vec3
 open Camera
 open Image
+open Misc
 
 module Viewport = struct
     type viewport_T = {
@@ -15,9 +16,6 @@ module Viewport = struct
             height = 0.;
             depth = 0.;
         }
-
-    let radians_of_deg x =
-        Float.pi *. (x /. 180.)
 
     let create width height depth =
         {
@@ -40,6 +38,15 @@ module Viewport = struct
             width = width;
             height = height;
             depth = depth
+        }
+
+    let create_vfov_aspect_camera vfov aspect (camera : Camera.camera_T) =
+        let height = camera.focus_dist *. (tan (radians_of_deg vfov /. 2.)) *. 2. in
+        let width = height *. aspect in
+        {
+            width = width;
+            height = height;
+            depth = camera.focus_dist;
         }
 
     let create_vfov_depth_aspect vfov depth aspect=

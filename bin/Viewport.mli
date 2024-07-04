@@ -16,6 +16,7 @@ module Viewport : sig
     val create_aspect : float -> float -> float -> viewport_T
 
     val create_vfov : float -> float -> float -> viewport_T
+    val create_vfov_aspect_camera : float -> float -> Camera.camera_T -> viewport_T
     val create_vfov_depth_aspect : float -> float -> float -> viewport_T
     val create_vfov_aspect : float -> float -> float -> viewport_T
 
