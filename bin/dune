@@ -1,0 +1,4 @@
+(executable
+ (public_name Raytracer_Blog)
+ (name main)
+ (libraries Raytracer_Blog))
