@@ -30,4 +30,5 @@ let () =
     scene_def.image_width <- 200;
     scene_def.image_height <- 200;
     scene_def.viewport <- viewport;
+    scene_def.max_depth <- 100;
     Scene.render_scene scene_def
