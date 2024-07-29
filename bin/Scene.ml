@@ -14,6 +14,7 @@ module Scene = struct
         mutable viewport: Viewport.viewport_T;
 
         mutable max_depth: int;
+        mutable sample_count: int;
     }
 
     let create_null =
@@ -23,6 +24,7 @@ module Scene = struct
             image_height = 0;
             viewport = Viewport.create_null ();
             max_depth = 1;
+            sample_count = 1;
         }
 
     let add_object def o =
@@ -65,10 +67,21 @@ module Scene = struct
         let down = Vec3.scalar down_delta (float_of_int y) in
 
         let ray_origin = origin in
-        let target = Vec3.add top_left (Vec3.add right down) in
-        let ray = Ray.create ray_origin (Vec3.sub target ray_origin) in
 
-        let colour = calculate_colour scene ray scene.max_depth in
+        let generate_ray _ =
+            let offset = Vec3.random_bounds (~-.0.5) 0.5 in
+            let off_x = Vec3.scalar right_delta offset.x in
+            let off_y = Vec3.scalar down_delta offset.y in
+            let target = Vec3.add top_left (Vec3.add right down) in
+            let target = Vec3.add target (Vec3.add off_x off_y) in
+            let ray = Ray.create ray_origin (Vec3.sub target ray_origin) in
+            ray
+        in
+
+        let rays = Array.init scene.sample_count generate_ray in
+        let colours = Array.map (fun r -> calculate_colour scene r scene.max_depth) rays in
+        let colour = Array.fold_left (Vec3.add) Vec3.zero colours in
+        let colour = Vec3.scalar colour (1. /. (float_of_int scene.sample_count)) in
         colour
 
     let render_scene scene =
