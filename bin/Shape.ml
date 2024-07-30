@@ -36,10 +36,11 @@ module Shape = struct
         let a = Vec3.dot r.direction r.direction in
         let half_b = Vec3.dot r.direction o_c in
         let c = (Vec3.dot o_c o_c) -. (s.radius *. s.radius) in
-        let disc = sqrt ((half_b *. half_b) -. (a *. c)) in
+        let disc = (half_b *. half_b) -. (a *. c) in
         if disc < 0. then
             HitRecord.Miss
         else
+            let disc = sqrt disc in
             let t =
                 if (~-.half_b -. disc) > 0.001 then
                     (~-.half_b -. disc) /. a
