@@ -35,4 +35,7 @@ module Object = struct
         (* let colour = Vec3.scalar (Vec3.add h.normal Vec3.one) 0.5 in *)
         (* Some (colour, r) *)
         Material.scatter o.material r h
+
+    let to_string o =
+        Printf.sprintf "(%s | %d)" (Shape.string_of_shape o.shape) o.id
 end

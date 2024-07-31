@@ -61,14 +61,6 @@ let () =
 
     let bvh = BVH_Node.create objects in
 
-    (* Printf.printf "%s\n" (BVH_Node.to_string bvh); *)
-    (* let r_c = Vec3.zero in *)
-    (* let r_d = Vec3.p_z in *)
-    (* let r = Ray.create r_c r_d in *)
-    (* let hit = BVH_Node.check_collision r bvh (Interval.zero_infinite) in *)
-    (* Printf.printf "%s\n" (Ray.string_of_ray r); *)
-    (* Printf.printf "%s\n" (HitRecord.string_of_hit hit); *)
-
     let scene = Scene.create_null_definition_with_bvh bvh objects in
     scene.name <- "output";
     scene.image_width <- image_width;

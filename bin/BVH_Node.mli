@@ -16,8 +16,6 @@ module BVH_Node : sig
 
     val create_null : (unit -> bvh_node)
 
-    val create_span : Object.object_T array -> int -> int -> bvh_node
-
     val create : Object.object_T array -> bvh_node
 
     val check_collision : Ray.ray -> bvh_node -> Interval.interval_T -> HitRecord.hit

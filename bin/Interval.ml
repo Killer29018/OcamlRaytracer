@@ -4,14 +4,18 @@ module Interval = struct
         mutable max: float
     }
 
-    let create_null =
-        fun () -> { min = 0.; max = 0. }
+    let empty = { min = 0.; max = 0. }
+
+    let universe = { min = Float.neg_infinity; max = Float.infinity}
 
     let create min max =
         { min = min; max = max }
 
     let zero_infinite =
         { min = 0.; max = Float.infinity}
+
+    let size interval =
+        interval.max -. interval.min
 
     let expand int1 int2 =
         { min = min int1.min int2.min; max = max int1.max int2.max }

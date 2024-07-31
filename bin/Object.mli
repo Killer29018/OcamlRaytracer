@@ -20,4 +20,6 @@ module Object : sig
     val check_collision : object_T -> Ray.ray -> Interval.interval_T -> HitRecord.hit
 
     val scatter_ray : object_T -> Ray.ray -> HitRecord.hit_record -> (Vec3.vec3 * Ray.ray) option
+
+    val to_string : object_T -> string
 end

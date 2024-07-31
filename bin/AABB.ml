@@ -9,12 +9,17 @@ module AABB = struct
         z : Interval.interval_T
     }
 
-    let create_null =
-        fun () -> {
-            x = Interval.create 0. 0.;
-            y = Interval.create 0. 0.;
-            z = Interval.create 0. 0.
-        }
+    let empty = {
+        x = Interval.empty;
+        y = Interval.empty;
+        z = Interval.empty
+    }
+
+    let universe = {
+        x = Interval.universe;
+        y = Interval.universe;
+        z = Interval.universe
+    }
 
     let create_values min_x max_x min_y max_y min_z max_z = {
             x = Interval.create min_x max_x;

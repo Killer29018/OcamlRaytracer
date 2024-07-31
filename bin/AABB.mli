@@ -9,7 +9,8 @@ module AABB : sig
         z : Interval.interval_T
     }
 
-    val create_null : (unit -> aabb_T)
+    val empty : aabb_T
+    val universe : aabb_T
 
     val create_values : float -> float -> float -> float -> float -> float -> aabb_T
 

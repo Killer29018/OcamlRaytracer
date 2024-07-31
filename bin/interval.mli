@@ -4,11 +4,14 @@ module Interval : sig
         mutable max: float
     }
 
-    val create_null : (unit -> interval_T)
+    val empty : interval_T
+    val universe : interval_T
 
     val create : float -> float -> interval_T
 
     val zero_infinite : interval_T
+
+    val size : interval_T -> float
 
     val expand : interval_T -> interval_T -> interval_T
 
