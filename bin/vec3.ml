@@ -8,6 +8,9 @@ module Vec3 = struct
     let create x y z =
         { x = x; y = y; z = z }
 
+    let create_single t =
+        { x = t; y = t; z = t }
+
     let zero = create 0. 0. 0.
     let one = create 1. 1. 1.
 
@@ -109,4 +112,16 @@ module Vec3 = struct
 
     let lerp a b t =
         add (scalar a (1. -. t)) (scalar b t)
+
+    let min_comp a b = {
+            x = min a.x b.x;
+            y = min a.y b.y;
+            z = min a.z b.z;
+        }
+
+    let max_comp a b = {
+            x = max a.x b.x;
+            y = max a.y b.y;
+            z = max a.z b.z;
+        }
 end

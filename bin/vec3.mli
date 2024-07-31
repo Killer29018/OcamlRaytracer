@@ -7,6 +7,8 @@ module Vec3 : sig
 
     val create : float -> float -> float -> vec3
 
+    val create_single : float -> vec3
+
     val zero : vec3
     val one : vec3
 
@@ -52,4 +54,7 @@ module Vec3 : sig
     val refract : vec3 -> vec3 -> float -> vec3
 
     val lerp : vec3 -> vec3 -> float -> vec3
+
+    val min_comp : vec3 -> vec3 -> vec3
+    val max_comp : vec3 -> vec3 -> vec3
 end

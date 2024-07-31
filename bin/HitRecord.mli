@@ -6,6 +6,7 @@ module HitRecord : sig
         mutable pos: Vec3.vec3;
         mutable normal: Vec3.vec3;
         mutable is_front_face: bool;
+        mutable id: int;
     }
 
     type hit = Miss
@@ -16,6 +17,8 @@ module HitRecord : sig
     val create_hit_record_tp : float -> Vec3.vec3 -> hit_record
     val create_hit_record_tpn : float -> Vec3.vec3 -> Vec3.vec3 -> hit_record
     val create_hit_record_tpnf : float -> Vec3.vec3 -> Vec3.vec3 -> bool -> hit_record
+
+    val closest_hit : hit -> hit -> hit
 
     val string_of_hit_record : hit_record -> string
     val string_of_hit : hit -> string

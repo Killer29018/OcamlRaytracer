@@ -6,6 +6,7 @@ module HitRecord = struct
         mutable pos: Vec3.vec3;
         mutable normal: Vec3.vec3;
         mutable is_front_face: bool;
+        mutable id: int;
     }
 
     type hit = Miss
@@ -16,7 +17,8 @@ module HitRecord = struct
                     t = 0.;
                     pos = Vec3.zero;
                     normal = Vec3.zero;
-                    is_front_face = false
+                    is_front_face = false;
+                    id = -1;
                   }
 
     let create_hit_record_tp t p =
@@ -37,6 +39,14 @@ module HitRecord = struct
         record.normal <- n;
         record.is_front_face <- f;
         record
+
+    let closest_hit a b =
+        match (a, b) with
+        | Miss, Miss -> Miss
+        | Miss, _ -> b
+        | _, Miss -> a
+        | Hit h1, Hit h2 ->
+            if h1.t < h2.t then Hit h1 else Hit h2
 
     let string_of_hit_record h =
         Printf.sprintf

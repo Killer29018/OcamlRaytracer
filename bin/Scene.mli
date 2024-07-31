@@ -1,11 +1,13 @@
-open Object
 open Camera
 open Viewport
+open BVH_Node
+open Object
 
 module Scene : sig
     type scene_definition = {
         mutable name: string;
-        mutable objects: Object.object_T array; (* Objects *)
+        mutable bvh: BVH_Node.bvh_node;
+        objects: Object.object_T array;
 
         mutable image_width: int;
         mutable image_height: int;
@@ -19,9 +21,7 @@ module Scene : sig
     }
 
     val create_null_definition : (unit -> scene_definition)
-    val create_null_definition_with_objects : Object.object_T list -> scene_definition
-
-    val add_object : scene_definition -> Object.object_T -> scene_definition
+    val create_null_definition_with_bvh : BVH_Node.bvh_node -> Object.object_T array -> scene_definition
 
     val render_scene : scene_definition -> unit
 end

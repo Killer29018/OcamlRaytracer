@@ -5,6 +5,11 @@ open Object
 open Material
 open Vec3
 open Viewport
+open BVH_Node
+
+(* open Ray *)
+(* open Interval *)
+(* open HitRecord *)
 
 (*
 +x : right
@@ -41,12 +46,30 @@ let () =
     let camera_pos = Vec3.create ~-.2. ~-.2. ~-.1. in
     let camera_look_at = Vec3.create 0. 0. 1. in
     let camera = Camera.create camera_pos camera_look_at in
-    camera.defocus_angle <- 10.;
+    camera.defocus_angle <- 0.;
     camera.focus_dist <- 3.4;
 
     let viewport = Viewport.create_vfov_aspect_camera vfov aspect camera in
 
-    let scene = Scene.create_null_definition_with_objects [ object_ground; object_left; object_centre; object_right; object_bubble ] in
+    let objects = [|
+        object_ground;
+        object_left;
+        object_centre;
+        object_right;
+        object_bubble
+    |] in
+
+    let bvh = BVH_Node.create objects in
+
+    (* Printf.printf "%s\n" (BVH_Node.to_string bvh); *)
+    (* let r_c = Vec3.zero in *)
+    (* let r_d = Vec3.p_z in *)
+    (* let r = Ray.create r_c r_d in *)
+    (* let hit = BVH_Node.check_collision r bvh (Interval.zero_infinite) in *)
+    (* Printf.printf "%s\n" (Ray.string_of_ray r); *)
+    (* Printf.printf "%s\n" (HitRecord.string_of_hit hit); *)
+
+    let scene = Scene.create_null_definition_with_bvh bvh objects in
     scene.name <- "output";
     scene.image_width <- image_width;
     scene.image_height <- image_height;

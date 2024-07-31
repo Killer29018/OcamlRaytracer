@@ -5,11 +5,14 @@ open Vec3
 open Object
 open HitRecord
 open Ray
+open Interval
+open BVH_Node
 
 module Scene = struct
     type scene_definition = {
         mutable name: string;
-        mutable objects: Object.object_T array;
+        mutable bvh: BVH_Node.bvh_node;
+        objects: Object.object_T array;
 
         mutable image_width: int;
         mutable image_height: int;
@@ -25,6 +28,7 @@ module Scene = struct
     let create_null_definition =
         fun () -> {
             name = "";
+            bvh = BVH_Node.create_null ();
             objects = [||];
             image_width = 0;
             image_height = 0;
@@ -34,10 +38,11 @@ module Scene = struct
             sample_count = 1;
         }
 
-    let create_null_definition_with_objects objs =
+    let create_null_definition_with_bvh bvh objects =
         {
             name = "";
-            objects = Array.of_list objs;
+            bvh = bvh;
+            objects = objects;
             image_width = 0;
             image_height = 0;
             viewport = Viewport.create_null ();
@@ -45,10 +50,6 @@ module Scene = struct
             max_depth = 1;
             sample_count = 1;
         }
-
-    let add_object def o =
-        def.objects <- (Array.append def.objects [| o |]);
-        def
 
     let miss_colour (ray : Ray.ray) =
         let direction = Vec3.norm ray.direction in
@@ -61,23 +62,13 @@ module Scene = struct
         if depth <= 0 then
             Vec3.zero
         else
-            let collisions = Array.mapi (fun i o -> (i, Object.check_collision o ray)) scene.objects in
-            let (index, closest) = Array.fold_left
-                (fun (index, hit) (i, x) ->
-                    match hit, x with
-                    | HitRecord.Miss, _ -> (i, x)
-                    | HitRecord.Hit _h, HitRecord.Miss -> (index, hit)
-                    | HitRecord.Hit h1, HitRecord.Hit h2 ->
-                        if h1.t < h2.t then
-                            (index, hit)
-                        else
-                            (i, x)
-                ) (-1, HitRecord.Miss) collisions in
+            let closest = BVH_Node.check_collision ray scene.bvh Interval.zero_infinite in
             match closest with
             | HitRecord.Miss ->
                 miss_colour ray
             | HitRecord.Hit h ->
-                let obj = scene.objects.(index) in
+                let obj =
+                    List.hd (List.filter (fun (a : Object.object_T) -> a.id = h.id) (Array.to_list scene.objects)) in
                 let result = Object.scatter_ray obj ray h in
                 match result with
                 | Some (c, r) ->
