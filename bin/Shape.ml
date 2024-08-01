@@ -1,4 +1,5 @@
 open Vec3
+open Vec2
 open HitRecord
 open Ray
 open AABB
@@ -44,6 +45,12 @@ module Shape = struct
         else
             (Vec3.negate normal, false)
 
+    let sphere_uv (point : Vec3.vec3) =
+        let theta = Float.acos (~-.(point.y)) in
+        let phi = (Float.atan2 (~-.(point.z)) (point.x)) +. Float.pi in
+        Vec2.create (phi /. (2. *. Float.pi)) (theta /. Float.pi)
+
+
     let sphere_ray_collision (r : Ray.ray) sphere (interval : Interval.interval_T)=
         IntersectionCount.increment_sphere ();
         let o_c = Vec3.sub r.origin sphere.centre in
@@ -68,7 +75,9 @@ module Shape = struct
             else
                 let pos = Ray.calculate_position r t in
                 let (normal, front_face) = get_normal_and_front_face (Sphere sphere) pos r.direction in
-                HitRecord.Hit (HitRecord.create_hit_record_tpnf t pos normal front_face)
+                let hit_record = HitRecord.create_hit_record_tpnf t pos normal front_face in
+                hit_record.uv <- sphere_uv pos;
+                HitRecord.Hit hit_record
 
     let check_collision r shape interval =
         match shape with

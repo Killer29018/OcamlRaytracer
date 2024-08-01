@@ -1,4 +1,5 @@
 open Vec3
+open Vec2
 
 module HitRecord : sig
     type hit_record = {
@@ -6,6 +7,7 @@ module HitRecord : sig
         mutable pos: Vec3.vec3;
         mutable normal: Vec3.vec3;
         mutable is_front_face: bool;
+        mutable uv : Vec2.vec2;
         mutable id: int;
     }
 

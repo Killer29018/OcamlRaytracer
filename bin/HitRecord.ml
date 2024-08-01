@@ -1,4 +1,5 @@
 open Vec3
+open Vec2
 
 module HitRecord = struct
     type hit_record = {
@@ -6,6 +7,7 @@ module HitRecord = struct
         mutable pos: Vec3.vec3;
         mutable normal: Vec3.vec3;
         mutable is_front_face: bool;
+        mutable uv : Vec2.vec2;
         mutable id: int;
     }
 
@@ -18,6 +20,7 @@ module HitRecord = struct
                     pos = Vec3.zero;
                     normal = Vec3.zero;
                     is_front_face = false;
+                    uv = Vec2.zero;
                     id = -1;
                   }
 

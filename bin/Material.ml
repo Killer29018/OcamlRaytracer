@@ -2,9 +2,11 @@ open Vec3
 open Ray
 open HitRecord
 
+open Texture
+
 module Material = struct
     type material_lambertian = {
-        albedo: Vec3.vec3;
+        texture : Texture.texture_T
     }
 
     type material_metal = {
@@ -26,8 +28,10 @@ module Material = struct
     let create_null =
         fun () -> None
 
-    let create_lambertian albedo =
-        Lambertian { albedo = albedo }
+    let create_lambertian texture =
+        Lambertian { texture = texture }
+    let create_lambertian_colour albedo =
+        Lambertian { texture = Texture.create_solid albedo }
 
     let create_metal albedo fuzz =
         Metal { albedo = albedo; fuzz = fuzz }
@@ -44,7 +48,8 @@ module Material = struct
                 scatter_direction
         in
         let scattered_ray = Ray.create hit.pos scatter_direction in
-        Some (lambertian.albedo, scattered_ray)
+        let colour = Texture.get_colour lambertian.texture hit.uv hit.pos in
+        Some (colour, scattered_ray)
 
     let scatter_metal (metal : material_metal) (ray : Ray.ray) (hit : HitRecord.hit_record) =
         let reflected = Vec3.reflect (ray.direction) hit.normal in

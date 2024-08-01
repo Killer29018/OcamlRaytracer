@@ -1,10 +1,11 @@
 open Vec3
 open Ray
 open HitRecord
+open Texture
 
 module Material : sig
     type material_lambertian = {
-        albedo: Vec3.vec3;
+        texture : Texture.texture_T
     }
 
     type material_metal = {
@@ -25,7 +26,8 @@ module Material : sig
 
     val create_null : (unit -> material_T)
 
-    val create_lambertian : Vec3.vec3 -> material_T
+    val create_lambertian : Texture.texture_T -> material_T
+    val create_lambertian_colour : Vec3.vec3 -> material_T
     val create_metal : Vec3.vec3 -> float -> material_T
     val create_dielectric : float -> material_T
 

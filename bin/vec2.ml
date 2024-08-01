@@ -9,11 +9,11 @@ module Vec2 = struct
     let zero = { x = 0.; y = 0. }
     let one  = { x = 1.; y = 1. }
 
-    let p_x : { x = 1.; y = 0. }
-    let p_y : { x = 0.; y = 1. }
+    let p_x = { x = 1.; y = 0. }
+    let p_y = { x = 0.; y = 1. }
 
-    let n_x : { x = ~-.1.; y = 0. }
-    let n_y : { x = 0.; y = ~-.1. }
+    let n_x = { x = ~-.1.; y = 0. }
+    let n_y = { x = 0.; y = ~-.1. }
 
     let string_of_vec2 x =
         Printf.sprintf "%f %f" x.x x.y
@@ -32,9 +32,9 @@ module Vec2 = struct
 
     let dot a b = a.x *. b.x +. a.y *. b.y
 
-    let scalar x t = { x = a.x *. t; y = a.y *. t }
+    let scalar x t = { x = x.x *. t; y = x.y *. t }
 
-    let mag_squared a = { a.x *. a.x +. a.y *. a.y }
+    let mag_squared a = a.x *. a.x +. a.y *. a.y
     let mag a = sqrt (mag_squared a)
     let norm a = scalar a (1. /. (mag a))
 end
