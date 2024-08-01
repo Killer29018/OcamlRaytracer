@@ -4,6 +4,8 @@ open Ray
 open AABB
 open Interval
 
+open IntersectionCount
+
 module Shape = struct
     type sphere_data = {
         centre: Vec3.vec3;
@@ -40,6 +42,7 @@ module Shape = struct
             (Vec3.negate normal, false)
 
     let sphere_ray_collision (r : Ray.ray) (aabb,sphere) (interval : Interval.interval_T)=
+        IntersectionCount.increment_sphere ();
         let o_c = Vec3.sub r.origin sphere.centre in
         let a = Vec3.dot r.direction r.direction in
         let half_b = Vec3.dot r.direction o_c in

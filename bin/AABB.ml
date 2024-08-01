@@ -2,6 +2,8 @@ open Vec3
 open Interval
 open Ray
 
+open IntersectionCount
+
 module AABB = struct
     type aabb_T = {
         x : Interval.interval_T;
@@ -52,6 +54,8 @@ module AABB = struct
     let hit aabb (ray : Ray.ray) (interval : Interval.interval_T) =
         let ray_origin = ray.origin in
         let ray_direction = ray.direction in
+
+        IntersectionCount.increment_box ();
 
         let update_interval (ax : Interval.interval_T) origin direction (interval : Interval.interval_T) =
             let dir_inv = 1. /. direction in

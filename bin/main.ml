@@ -7,6 +7,8 @@ open Vec3
 open Viewport
 open BVH_Node
 
+open IntersectionCount
+
 (* open Ray *)
 (* open Interval *)
 (* open HitRecord *)
@@ -69,4 +71,6 @@ let () =
     scene.camera <- camera;
     scene.max_depth <- 50;
     scene.sample_count <- 100;
-    Scene.render_scene scene
+    Scene.render_scene scene;
+
+    IntersectionCount.print_intersections ()
