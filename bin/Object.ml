@@ -1,12 +1,13 @@
 open Shape
 open Material
 open HitRecord
+open AABB
 
 module Object = struct
     type object_T = {
         shape: Shape.shape_T;
         material: Material.material_T;
-
+        aabb : AABB.aabb_T;
         id: int;
     }
 
@@ -18,10 +19,11 @@ module Object = struct
             id
 
     let create s m =
-        { shape = s; material = m; id = generate_id ()}
+        let aabb = Shape.create_bounding_box s in
+        { shape = s; material = m; aabb = aabb; id = generate_id ()}
 
     let get_bounding_box o =
-        Shape.get_bounding_box o.shape
+        o.aabb
 
     let check_collision o r interval =
         let hit = Shape.check_collision r o.shape interval in

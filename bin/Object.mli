@@ -10,6 +10,7 @@ module Object : sig
     type object_T = {
         shape: Shape.shape_T;
         material: Material.material_T;
+        aabb : AABB.aabb_T;
         id: int;
     }
 

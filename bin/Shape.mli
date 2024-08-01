@@ -11,14 +11,14 @@ module Shape : sig
     }
 
     type shape_T = None
-                 | Sphere of AABB.aabb_T * sphere_data
+                 | Sphere of sphere_data
                 (* | Triangle *)
 
     exception ShapeError of string
 
     val create_sphere : Vec3.vec3 -> float -> shape_T
 
-    val get_bounding_box : shape_T -> AABB.aabb_T
+    val create_bounding_box : shape_T -> AABB.aabb_T
 
     val get_normal : shape_T -> Vec3.vec3 -> Vec3.vec3
     val get_normal_and_front_face : shape_T -> Vec3.vec3 -> Vec3.vec3 -> (Vec3.vec3 * bool)
