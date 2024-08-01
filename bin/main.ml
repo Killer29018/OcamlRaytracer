@@ -127,6 +127,52 @@ let _checkered_spheres = fun () ->
 
     IntersectionCount.print_intersections ()
 
+let _perlin_spheres = fun () ->
+    let perlin_texture = Texture.create_noise () in
+
+    let material = Material.create_lambertian perlin_texture in
+
+    let sphere_top = Shape.create_sphere (Vec3.create 0. 1000. 0. ) 1000. in
+    let sphere_bot = Shape.create_sphere (Vec3.create 0. ~-.2. 0. ) 2. in
+
+    let object_top = Object.create sphere_top material in
+    let object_bot = Object.create sphere_bot material in
+
+    let objects = [|
+        object_top;
+        object_bot;
+    |] in
+
+    let bvh = BVH_Node.create objects in
+
+    let aspect = 16. /. 9. in
+
+    let image_width = 400 in
+    let image_height = int_of_float ((float_of_int image_width) /. aspect) in
+
+    let vfov = 20. in
+
+    let camera_pos = Vec3.create 13. ~-.2. ~-.3. in
+    let camera_look_at = Vec3.create 0. 0. 0. in
+    let camera = Camera.create camera_pos camera_look_at in
+    camera.defocus_angle <- 0.;
+    camera.focus_dist <- 3.4;
+
+    let viewport = Viewport.create_vfov_aspect_camera vfov aspect camera in
+
+    let scene = Scene.create_null_definition_with_bvh bvh objects in
+    scene.name <- "output";
+    scene.image_width <- image_width;
+    scene.image_height <- image_height;
+    scene.viewport <- viewport;
+    scene.camera <- camera;
+    scene.max_depth <- 50;
+    scene.sample_count <- 100;
+    Scene.render_scene scene;
+
+    IntersectionCount.print_intersections ()
+
 let () =
-    _checkered_spheres ()
     (* three_spheres () *)
+    (* _checkered_spheres () *)
+    _perlin_spheres ()
