@@ -9,7 +9,8 @@ module Texture : sig
     }
 
     type noise_texture_data = {
-        noise : Perlin.perlin_T
+        noise : Perlin.perlin_T;
+        scale : float
     }
 
     type checker_texture_data = {
@@ -26,7 +27,7 @@ module Texture : sig
 
     val create_solid : Vec3.vec3 -> texture_T
 
-    val create_noise : (unit -> texture_T)
+    val create_noise : float -> texture_T
 
     val create_checker : float -> texture_T -> texture_T -> texture_T
     val create_checker_colour : float -> Vec3.vec3 -> Vec3.vec3 -> texture_T

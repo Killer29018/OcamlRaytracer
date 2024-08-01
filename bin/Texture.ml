@@ -9,7 +9,8 @@ module Texture = struct
     }
 
     type noise_texture_data = {
-        noise : Perlin.perlin_T
+        noise : Perlin.perlin_T;
+        scale : float
     }
 
     type checker_texture_data = {
@@ -28,8 +29,8 @@ module Texture = struct
     let create_solid c =
         Solid { colour = c }
 
-    let create_noise = fun () ->
-        Noise { noise = Perlin.create () }
+    let create_noise scale =
+        Noise { noise = Perlin.create (); scale = scale }
 
     let create_checker scale even odd =
         Checker { inv_scale = 1. /. scale; even = even; odd = odd }
@@ -40,8 +41,12 @@ module Texture = struct
     let get_colour_solid data =
         data.colour
 
-    let get_colour_noise data point =
-        Vec3.scalar Vec3.one (Perlin.noise data.noise point)
+    let get_colour_noise data (point : Vec3.vec3) =
+        let colour = Vec3.create 0.5 0.5 0.5 in
+        let modifier = 1. +. (Float.sin (data.scale *. point.z +. 10. *. (Perlin.turb data.noise point 7))) in
+        Vec3.scalar colour modifier
+        (* Vec3.scalar Vec3.one (Perlin.turb data.noise point 7) *)
+        (* Vec3.scalar Vec3.one ((1. +. (Perlin.noise data.noise (Vec3.scalar point data.scale))) *. 0.5) *)
 
     let rec get_colour_checker data (uv : Vec2.vec2) (point : Vec3.vec3) =
         let xInt = int_of_float (Float.floor (data.inv_scale *. point.x)) in

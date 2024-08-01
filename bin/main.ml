@@ -128,7 +128,7 @@ let _checkered_spheres = fun () ->
     IntersectionCount.print_intersections ()
 
 let _perlin_spheres = fun () ->
-    let perlin_texture = Texture.create_noise () in
+    let perlin_texture = Texture.create_noise 4. in
 
     let material = Material.create_lambertian perlin_texture in
 
@@ -173,6 +173,7 @@ let _perlin_spheres = fun () ->
     IntersectionCount.print_intersections ()
 
 let () =
+    Random.self_init ();
     (* three_spheres () *)
     (* _checkered_spheres () *)
     _perlin_spheres ()
