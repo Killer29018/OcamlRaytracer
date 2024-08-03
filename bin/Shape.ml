@@ -109,6 +109,7 @@ module Shape = struct
 
     let quad_ray_collision (r : Ray.ray) quad (interval : Interval.interval_T) =
         let denom = Vec3.dot quad.normal r.direction in
+        IntersectionCount.increment_quad ();
 
         if (Float.abs denom) < 1e-8 then
             HitRecord.Miss
@@ -124,9 +125,6 @@ module Shape = struct
                 let beta  = Vec3.dot quad.w (Vec3.cross quad.u planar_hitpt_vector) in
 
                 if (not (Interval.contains Interval.unit alpha)) || (not (Interval.contains Interval.unit beta)) then
-                    (* Printf.printf "Hit position: (%s)\n" (Vec3.string_of_vec3 pos); *)
-                    (* Printf.printf "Planar hit position: (%s)\n" (Vec3.string_of_vec3 planar_hitpt_vector); *)
-                    (* Printf.printf "Out of range: %.4f %.4f\n" alpha beta; *)
                     HitRecord.Miss
                 else
                     let (normal, front_face) = get_normal_and_front_face (Quad quad) pos r.direction in
