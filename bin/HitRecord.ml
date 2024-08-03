@@ -53,11 +53,13 @@ module HitRecord = struct
 
     let string_of_hit_record h =
         Printf.sprintf
-            "%.4f | (%s) | (%s) | %s"
+            "%.4f | (%s) | (%s) | %s | (%s) | %d"
             (h.t)
             (Vec3.string_of_vec3 h.pos)
             (Vec3.string_of_vec3 h.normal)
             (if h.is_front_face then "FRONT" else "BACK")
+            (Vec2.string_of_vec2 h.uv)
+            (h.id)
 
     let string_of_hit = function
         | Miss -> Printf.sprintf "MISS"

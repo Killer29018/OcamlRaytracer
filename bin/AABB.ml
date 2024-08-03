@@ -23,26 +23,31 @@ module AABB = struct
         z = Interval.universe
     }
 
-    let create_values min_x max_x min_y max_y min_z max_z = {
-            x = Interval.create min_x max_x;
-            y = Interval.create min_y max_y;
-            z = Interval.create min_z max_z
+    let pad_to_minimum x y z =
+        let delta = 0.0001 in
+        {
+            x = Interval.pad x delta;
+            y = Interval.pad y delta;
+            z = Interval.pad z delta
         }
 
-    let create_intervals x y z = {
-            x = x;
-            y = y;
-            z = z
-        }
+    let create_values min_x max_x min_y max_y min_z max_z =
+        let x = Interval.create min_x max_x in
+        let y = Interval.create min_y max_y in
+        let z = Interval.create min_z max_z in
+        pad_to_minimum x y z
+
+    let create_intervals x y z =
+        pad_to_minimum x y z
 
     let create_points a b =
         let min_point = Vec3.min_comp a b in
         let max_point = Vec3.max_comp a b in
-        {
-            x = Interval.create min_point.x max_point.x;
-            y = Interval.create min_point.y max_point.y;
-            z = Interval.create min_point.z max_point.z
-        }
+
+        let x = Interval.create min_point.x max_point.x in
+        let y = Interval.create min_point.y max_point.y in
+        let z = Interval.create min_point.z max_point.z in
+        pad_to_minimum x y z
 
     let create_aabb a b =
         {

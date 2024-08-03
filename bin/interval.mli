@@ -11,11 +11,15 @@ module Interval : sig
 
     val zero_infinite : interval_T
 
+    val unit : interval_T
+
     val size : interval_T -> float
 
     val expand : interval_T -> interval_T -> interval_T
 
-    val contained : interval_T -> float -> bool
+    val pad : interval_T -> float -> interval_T
+
+    val contains : interval_T -> float -> bool
 
     val clamp : interval_T -> float -> float
 

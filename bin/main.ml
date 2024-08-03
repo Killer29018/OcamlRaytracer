@@ -172,8 +172,86 @@ let _perlin_spheres = fun () ->
 
     IntersectionCount.print_intersections ()
 
+let _quads = fun () ->
+    let mat_left  = Material.create_lambertian_colour (Vec3.create 1.0 0.2 0.2) in
+    let mat_back  = Material.create_lambertian_colour (Vec3.create 0.2 1.0 0.2) in
+    let mat_right = Material.create_lambertian_colour (Vec3.create 0.2 0.2 1.0) in
+    let mat_top   = Material.create_lambertian_colour (Vec3.create 1.0 0.5 0.0) in
+    let mat_bot   = Material.create_lambertian_colour (Vec3.create 0.2 0.8 0.8) in
+
+    let quad_left  = Shape.create_quad (Vec3.create ~-.3.    2. ~-.5.)
+                                       (Vec3.create    0. ~-.4.    0.)
+                                       (Vec3.create    0.    0.    4.)
+    in
+    let quad_back  = Shape.create_quad (Vec3.create ~-.2.    2.    0.)
+                                       (Vec3.create    4.    0.    0.)
+                                       (Vec3.create    0. ~-.4.    0.)
+    in
+    let quad_right = Shape.create_quad (Vec3.create    3.    2. ~-.5.)
+                                       (Vec3.create    0. ~-.4.    0.)
+                                       (Vec3.create    0.    0.    4.)
+    in
+    let quad_top   = Shape.create_quad (Vec3.create ~-.2. ~-.3. ~-.1.)
+                                       (Vec3.create    0.    0. ~-.4.)
+                                       (Vec3.create    4.    0.    0.)
+    in
+    let quad_bot   = Shape.create_quad (Vec3.create ~-.2.    3. ~-.5.)
+                                       (Vec3.create    4.    0.    0.)
+                                       (Vec3.create    0.    0.    4.)
+    in
+
+    let _object_left  = Object.create quad_left  mat_left  in
+    let _object_back  = Object.create quad_back  mat_back  in
+    let _object_right = Object.create quad_right mat_right in
+    let _object_top   = Object.create quad_top   mat_top   in
+    let _object_bot   = Object.create quad_bot   mat_bot   in
+
+    let objects = [|
+        _object_left;
+        _object_back;
+        _object_right;
+        _object_top;
+        _object_bot
+    |] in
+
+    (* let ray_o = Vec3.create 0. 0. 1. in *)
+    (* let ray_d = Vec3.create 0. 0. ~-.1. in *)
+    (* let ray = Ray.create ray_o ray_d in *)
+    (* let hit = Object.check_collision _object_back ray Interval.universe in *)
+    (* Printf.printf "%s\n" (HitRecord.string_of_hit hit); *)
+
+    let bvh = BVH_Node.create objects in
+
+    let aspect = 1. in
+
+    let image_width = 400 in
+    let image_height = int_of_float ((float_of_int image_width) /. aspect) in
+
+    let vfov = 80. in
+
+    let camera_pos = Vec3.create 0. 0. ~-.9. in
+    let camera_look_at = Vec3.create 0. 0. 0. in
+    let camera = Camera.create camera_pos camera_look_at in
+    camera.defocus_angle <- 0.;
+    camera.focus_dist <- 3.4;
+
+    let viewport = Viewport.create_vfov_aspect_camera vfov aspect camera in
+
+    let scene = Scene.create_null_definition_with_bvh bvh objects in
+    scene.name <- "output";
+    scene.image_width <- image_width;
+    scene.image_height <- image_height;
+    scene.viewport <- viewport;
+    scene.camera <- camera;
+    scene.max_depth <- 50;
+    scene.sample_count <- 100;
+    Scene.render_scene scene;
+
+    IntersectionCount.print_intersections ()
+
 let () =
     Random.self_init ();
     (* three_spheres () *)
     (* _checkered_spheres () *)
-    _perlin_spheres ()
+    (* _perlin_spheres () *)
+    _quads ()

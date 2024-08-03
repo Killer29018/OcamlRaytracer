@@ -14,13 +14,19 @@ module Interval = struct
     let zero_infinite =
         { min = 0.; max = Float.infinity}
 
+    let unit =
+        { min = 0.; max = 1. }
+
     let size interval =
         interval.max -. interval.min
 
     let expand int1 int2 =
         { min = min int1.min int2.min; max = max int1.max int2.max }
 
-    let contained interval t =
+    let pad int pad =
+        { min = int.min -. (pad /. 2.); max = int.max -. (pad /. 2.) }
+
+    let contains interval t =
         (t >= interval.min && t <= interval.max)
 
     let clamp interval t =
