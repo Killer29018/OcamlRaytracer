@@ -4,6 +4,7 @@ open Image
 open Vec3
 open Object
 open HitRecord
+open Material
 open Ray
 open Interval
 open BVH_Node
@@ -23,6 +24,8 @@ module Scene = struct
 
         mutable max_depth: int;
         mutable sample_count: int;
+
+        mutable background: Vec3.vec3;
     }
 
     let create_null_definition =
@@ -36,6 +39,7 @@ module Scene = struct
             camera = Camera.create_null ();
             max_depth = 1;
             sample_count = 1;
+            background = Vec3.zero;
         }
 
     let create_null_definition_with_bvh bvh objects =
@@ -49,14 +53,11 @@ module Scene = struct
             camera = Camera.create_null ();
             max_depth = 1;
             sample_count = 1;
+            background = Vec3.zero;
         }
 
-    let miss_colour (ray : Ray.ray) =
-        let direction = Vec3.norm ray.direction in
-        let a = Float.abs direction.y in
-        let lower_col = Vec3.create 1. 1. 1. in
-        let higher_col = Vec3.create 0.5 0.7 1. in
-        Vec3.lerp lower_col higher_col a
+    let miss_colour scene =
+        scene.background
 
     let rec calculate_colour scene ray depth =
         if depth <= 0 then
@@ -65,16 +66,21 @@ module Scene = struct
             let closest = BVH_Node.check_collision ray scene.bvh Interval.zero_infinite in
             match closest with
             | HitRecord.Miss ->
-                miss_colour ray
+                miss_colour scene
             | HitRecord.Hit h ->
                 let obj =
                     List.hd (List.filter (fun (a : Object.object_T) -> a.id = h.id) (Array.to_list scene.objects)) in
+
+                let color_from_emission = Material.emitted obj.material h.uv h.pos in
+
                 let result = Object.scatter_ray obj ray h in
                 match result with
                 | Some (c, r) ->
-                    Vec3.comp_mul c (calculate_colour scene r (depth - 1))
+                    Vec3.add
+                        color_from_emission
+                        (Vec3.comp_mul c (calculate_colour scene r (depth - 1)))
                 | None ->
-                    Vec3.zero
+                    color_from_emission
 
 
     let per_pixel x y scene origin top_left right_off down_off defocus_radius =

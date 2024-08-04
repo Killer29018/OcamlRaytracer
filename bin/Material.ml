@@ -18,10 +18,15 @@ module Material = struct
         refraction_index: float;
     }
 
+    type material_diffuse = {
+        texture : Texture.texture_T
+    }
+
     type material_T = None
                     | Lambertian of material_lambertian
                     | Metal of material_metal
                     | Dielectric of material_dielectric
+                    | Diffuse of material_diffuse
 
     exception MaterialError of string
 
@@ -38,6 +43,11 @@ module Material = struct
 
     let create_dielectric refraction =
         Dielectric { refraction_index = refraction }
+
+    let create_diffuse texture =
+        Diffuse { texture = texture }
+    let create_diffuse_colour emit =
+        Diffuse { texture = Texture.create_solid emit }
 
     let scatter_lambertian (lambertian : material_lambertian) (hit : HitRecord.hit_record) =
         let scatter_direction = Vec3.add hit.normal (Vec3.random_unit ()) in
@@ -91,5 +101,14 @@ module Material = struct
         | Lambertian l -> scatter_lambertian l hit
         | Metal m -> scatter_metal m ray hit
         | Dielectric d -> scatter_dielectric d ray hit
+        | Diffuse _ -> None
         | _ -> raise (MaterialError "No Material Scatter defined")
+
+    let emitted mat uv point =
+        match mat with
+        | Lambertian _
+        | Metal _
+        | Dielectric _ -> Vec3.zero
+        | Diffuse d -> Texture.get_colour d.texture uv point
+        | _ -> raise (MaterialError "No material emitted defined")
 end

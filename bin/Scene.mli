@@ -1,3 +1,4 @@
+open Vec3
 open Camera
 open Viewport
 open BVH_Node
@@ -18,6 +19,8 @@ module Scene : sig
 
         mutable max_depth: int;
         mutable sample_count: int;
+
+        mutable background: Vec3.vec3;
     }
 
     val create_null_definition : (unit -> scene_definition)

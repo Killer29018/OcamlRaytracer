@@ -76,6 +76,7 @@ let _three_spheres = fun () ->
     scene.camera <- camera;
     scene.max_depth <- 50;
     scene.sample_count <- 100;
+    scene.background <- Vec3.create 0.7 0.8 1.;
     Scene.render_scene scene;
 
     IntersectionCount.print_intersections ()
@@ -123,6 +124,7 @@ let _checkered_spheres = fun () ->
     scene.camera <- camera;
     scene.max_depth <- 50;
     scene.sample_count <- 100;
+    scene.background <- Vec3.create 0.7 0.8 1.;
     Scene.render_scene scene;
 
     IntersectionCount.print_intersections ()
@@ -168,6 +170,7 @@ let _perlin_spheres = fun () ->
     scene.camera <- camera;
     scene.max_depth <- 50;
     scene.sample_count <- 100;
+    scene.background <- Vec3.create 0.7 0.8 1.;
     Scene.render_scene scene;
 
     IntersectionCount.print_intersections ()
@@ -214,12 +217,6 @@ let _quads = fun () ->
         _object_bot
     |] in
 
-    (* let ray_o = Vec3.create 0. 0. 1. in *)
-    (* let ray_d = Vec3.create 0. 0. ~-.1. in *)
-    (* let ray = Ray.create ray_o ray_d in *)
-    (* let hit = Object.check_collision _object_back ray Interval.universe in *)
-    (* Printf.printf "%s\n" (HitRecord.string_of_hit hit); *)
-
     let bvh = BVH_Node.create objects in
 
     let aspect = 1. in
@@ -245,6 +242,61 @@ let _quads = fun () ->
     scene.camera <- camera;
     scene.max_depth <- 50;
     scene.sample_count <- 100;
+    scene.background <- Vec3.create 0.7 0.8 1.;
+    Scene.render_scene scene;
+
+    IntersectionCount.print_intersections ()
+
+let _simple_lights = fun () ->
+    let perlin_texture = Texture.create_noise 4. in
+
+    let mat_perlin  = Material.create_lambertian perlin_texture in
+    let mat_diffuse = Material.create_diffuse_colour (Vec3.create 4. 4. 4.) in
+
+    let sphere_ground = Shape.create_sphere (Vec3.create 0. 1000. 0. ) 1000. in
+    let sphere_above = Shape.create_sphere (Vec3.create 0. ~-.2. 0. ) 2. in
+    let sphere_light = Shape.create_sphere (Vec3.create 0. ~-.7. 0. ) 2. in
+
+    let shape_diffuse = Shape.create_quad (Vec3.create 3. ~-.1. 2.) (Vec3.create 2. 0. 0.) (Vec3.create 0. ~-.2. 0.) in
+
+    let _object_1 = Object.create sphere_ground mat_perlin in
+    let _object_2 = Object.create sphere_above mat_perlin in
+    let _object_3 = Object.create shape_diffuse mat_diffuse in
+    let _object_4 = Object.create sphere_light mat_diffuse in
+
+
+    let objects = [|
+        _object_1;
+        _object_2;
+        _object_3
+    |] in
+
+    let bvh = BVH_Node.create objects in
+
+    let aspect = 16. /. 9. in
+
+    let image_width = 400 in
+    let image_height = int_of_float ((float_of_int image_width) /. aspect) in
+
+    let vfov = 20. in
+
+    let camera_pos = Vec3.create 26. ~-.3. ~-.6. in
+    let camera_look_at = Vec3.create 0. ~-.2. 0. in
+    let camera = Camera.create camera_pos camera_look_at in
+    camera.defocus_angle <- 0.;
+    camera.focus_dist <- 3.4;
+
+    let viewport = Viewport.create_vfov_aspect_camera vfov aspect camera in
+
+    let scene = Scene.create_null_definition_with_bvh bvh objects in
+    scene.name <- "output";
+    scene.image_width <- image_width;
+    scene.image_height <- image_height;
+    scene.viewport <- viewport;
+    scene.camera <- camera;
+    scene.max_depth <- 50;
+    scene.sample_count <- 100;
+    scene.background <- Vec3.create 0. 0. 0.;
     Scene.render_scene scene;
 
     IntersectionCount.print_intersections ()
@@ -254,4 +306,5 @@ let () =
     (* three_spheres () *)
     (* _checkered_spheres () *)
     (* _perlin_spheres () *)
-    _quads ()
+    (* _quads () *)
+    _simple_lights ()
