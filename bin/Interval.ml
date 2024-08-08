@@ -12,7 +12,7 @@ module Interval = struct
         { min = min; max = max }
 
     let zero_infinite =
-        { min = 0.; max = Float.infinity}
+        { min = Float.min_float; max = Float.infinity}
 
     let unit =
         { min = 0.; max = 1. }
@@ -22,6 +22,9 @@ module Interval = struct
 
     let expand int1 int2 =
         { min = min int1.min int2.min; max = max int1.max int2.max }
+
+    let offset int off =
+        { min = int.min +. off; max = int.max +. off}
 
     let pad int pad =
         { min = int.min -. (pad /. 2.); max = int.max -. (pad /. 2.) }

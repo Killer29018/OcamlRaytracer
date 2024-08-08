@@ -7,6 +7,8 @@ open Vec3
 open Viewport
 open BVH_Node
 
+open Transform
+
 open Texture
 open IntersectionCount
 
@@ -264,11 +266,15 @@ let _simple_lights = fun () ->
     let _object_3 = Object.create shape_diffuse mat_diffuse in
     let _object_4 = Object.create sphere_light mat_diffuse in
 
+    let translate = Transform.create_translate (Vec3.create 0. ~-.1. 0.) in
+    Object.add_transform _object_3 translate;
+
 
     let objects = [|
         _object_1;
         _object_2;
-        _object_3
+        _object_3;
+        (* _object_4; *)
     |] in
 
     let bvh = BVH_Node.create objects in
@@ -301,6 +307,78 @@ let _simple_lights = fun () ->
 
     IntersectionCount.print_intersections ()
 
+let _cornell_box = fun () ->
+    let mat_red   = Material.create_lambertian_colour (Vec3.create 0.65 0.05 0.05) in
+    let mat_white = Material.create_lambertian_colour (Vec3.create 0.73 0.73 0.73) in
+    let mat_green = Material.create_lambertian_colour (Vec3.create 0.12 0.45 0.15) in
+    let mat_light = Material.create_diffuse_colour (Vec3.create 15. 15. 15.) in
+
+    let quad_1 = Shape.create_quad (Vec3.create      0.      0.      0.)
+                                   (Vec3.create      0.      0.    555.)
+                                   (Vec3.create      0. ~-.555.      0.) in
+    let quad_2 = Shape.create_quad (Vec3.create    555.      0.      0.)
+                                   (Vec3.create      0. ~-.555.      0.)
+                                   (Vec3.create      0.      0.    555.) in
+    let quad_3 = Shape.create_quad (Vec3.create      0.      0.      0.)
+                                   (Vec3.create    555.      0.      0.)
+                                   (Vec3.create      0.      0.    555.) in
+    let quad_4 = Shape.create_quad (Vec3.create    555. ~-.555.    555.)
+                                   (Vec3.create ~-.555.      0.      0.)
+                                   (Vec3.create      0.      0. ~-.555.) in
+    let quad_5 = Shape.create_quad (Vec3.create      0.      0.    555.)
+                                   (Vec3.create    555.      0.      0.)
+                                   (Vec3.create      0. ~-.555.      0.) in
+
+    let quad_light = Shape.create_quad (Vec3.create    343.~-.554.    332.)
+                                       (Vec3.create ~-.130.     0.      0.)
+                                       (Vec3.create      0.     0. ~-.105.) in
+
+    let _object_1 = Object.create quad_1 mat_green in
+    let _object_2 = Object.create quad_2 mat_red   in
+    let _object_3 = Object.create quad_3 mat_white in
+    let _object_4 = Object.create quad_4 mat_white in
+    let _object_5 = Object.create quad_5 mat_white in
+    let _object_6 = Object.create quad_light mat_light in
+
+
+    let objects = [|
+        _object_1;
+        _object_2;
+        _object_3;
+        _object_4;
+        _object_5;
+        _object_6
+    |] in
+
+    let bvh = BVH_Node.create objects in
+
+    let aspect = 1. in
+
+    let image_width = 300 in
+    let image_height = int_of_float ((float_of_int image_width) /. aspect) in
+
+    let vfov = 40. in
+
+    let camera_pos = Vec3.create 278. ~-.278. ~-.800. in
+    let camera_look_at = Vec3.create 278. ~-.278. 0. in
+    let camera = Camera.create camera_pos camera_look_at in
+    camera.defocus_angle <- 0.;
+
+    let viewport = Viewport.create_vfov_aspect_camera vfov aspect camera in
+
+    let scene = Scene.create_null_definition_with_bvh bvh objects in
+    scene.name <- "output";
+    scene.image_width <- image_width;
+    scene.image_height <- image_height;
+    scene.viewport <- viewport;
+    scene.camera <- camera;
+    scene.max_depth <- 50;
+    scene.sample_count <- 400;
+    scene.background <- Vec3.create 0. 0. 0.;
+    Scene.render_scene scene;
+
+    IntersectionCount.print_intersections ()
+
 let () =
     Random.self_init ();
     (* three_spheres () *)
@@ -308,3 +386,4 @@ let () =
     (* _perlin_spheres () *)
     (* _quads () *)
     _simple_lights ()
+    (* _cornell_box () *)

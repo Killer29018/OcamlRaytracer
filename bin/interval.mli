@@ -17,6 +17,8 @@ module Interval : sig
 
     val expand : interval_T -> interval_T -> interval_T
 
+    val offset : interval_T -> float -> interval_T
+
     val pad : interval_T -> float -> interval_T
 
     val contains : interval_T -> float -> bool

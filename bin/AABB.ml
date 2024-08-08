@@ -54,6 +54,14 @@ module AABB = struct
             x = Interval.expand a.x b.x;
             y = Interval.expand a.y b.y;
             z = Interval.expand a.z b.z
+
+        }
+
+    let offset a (o: Vec3.vec3) =
+        {
+            x = Interval.offset a.x o.x;
+            y = Interval.offset a.y o.y;
+            z = Interval.offset a.z o.z
         }
 
     let hit aabb (ray : Ray.ray) (interval : Interval.interval_T) =

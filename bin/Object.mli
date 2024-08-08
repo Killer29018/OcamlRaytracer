@@ -5,16 +5,20 @@ open HitRecord
 open Vec3
 open Interval
 open AABB
+open Transform
 
 module Object : sig
     type object_T = {
         shape: Shape.shape_T;
         material: Material.material_T;
-        aabb : AABB.aabb_T;
+        mutable aabb : AABB.aabb_T;
         id: int;
+        mutable transforms: Transform.transform_T array;
     }
 
     val create : Shape.shape_T -> Material.material_T -> object_T
+
+    val add_transform : object_T -> Transform.transform_T -> unit
 
     val get_bounding_box : object_T -> AABB.aabb_T
 

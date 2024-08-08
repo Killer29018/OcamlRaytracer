@@ -20,6 +20,8 @@ module AABB : sig
 
     val create_aabb : aabb_T -> aabb_T -> aabb_T
 
+    val offset : aabb_T -> Vec3.vec3 -> aabb_T
+
     val hit : aabb_T -> Ray.ray -> Interval.interval_T -> bool
 
     val to_string : aabb_T -> string
