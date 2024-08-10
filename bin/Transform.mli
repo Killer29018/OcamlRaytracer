@@ -8,12 +8,20 @@ module Transform : sig
         offset: Vec3.vec3;
     }
 
+    type rotate_y_data = {
+        sin_theta: float;
+        cos_theta: float;
+    }
+
     type transform_T = None
                      | Translate of translate_data
+                     | RotateY of rotate_y_data
 
     val create_null : transform_T
 
     val create_translate : Vec3.vec3 -> transform_T
+
+    val create_rotate_y : float -> transform_T
 
     val apply : transform_T -> Ray.ray -> Ray.ray
 

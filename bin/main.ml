@@ -267,7 +267,9 @@ let _simple_lights = fun () ->
     let _object_4 = Object.create sphere_light mat_diffuse in
 
     let translate = Transform.create_translate (Vec3.create 0. ~-.1. 0.) in
+    let rotate = Transform.create_rotate_y 90. in
     Object.add_transform _object_3 translate;
+    Object.add_transform _object_3 rotate;
 
 
     let objects = [|
