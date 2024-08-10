@@ -22,11 +22,15 @@ module Shape = struct
         w : Vec3.vec3;
     }
 
-    exception ShapeError of string
-
-    type shape_T = None
+    type box_data = {
+        quads: shape_T array
+    }
+    and shape_T = None
                  | Sphere of sphere_data
                  | Quad of quad_data
+                 | Box of box_data
+
+    exception ShapeError of string
 
     let create_sphere c r =
         Sphere { centre = c; radius = r }
@@ -45,7 +49,33 @@ module Shape = struct
 
         Quad { q = q; u = u; v = v; normal = normal; d = d; w = w }
 
-    let create_bounding_box = function
+    let create_box (a: Vec3.vec3) (b: Vec3.vec3) =
+        let min = Vec3.create
+            (Float.min a.x b.x)
+            (Float.min a.y b.y)
+            (Float.min a.z b.z)
+        in
+        let max = Vec3.create
+            (Float.max a.x b.x)
+            (Float.max a.y b.y)
+            (Float.max a.z b.z)
+        in
+
+        let dx = Vec3.create (max.x -. min.x) 0. 0. in
+        let dy = Vec3.create 0. (max.y -. min.y) 0. in
+        let dz = Vec3.create 0. 0. (max.z -. min.z) in
+        Box {
+            quads = [|
+                create_quad (Vec3.create min.x min.y max.z) (dx) (dy);
+                create_quad (Vec3.create max.x min.y max.z) (Vec3.negate dz) (dy);
+                create_quad (Vec3.create max.x min.y min.z) (Vec3.negate dx) (dy);
+                create_quad (Vec3.create min.x min.y min.z) (dz) (dy);
+                create_quad (Vec3.create min.x max.y max.z) (dx) (Vec3.negate dz);
+                create_quad (Vec3.create min.x min.y min.z) (dx) (dz);
+            |]
+        }
+
+    let rec create_bounding_box = function
         | Sphere s ->
             let c = s.centre in
             let r = s.radius in
@@ -56,6 +86,18 @@ module Shape = struct
             let diagonal_1 = AABB.create_points (q.q) (Vec3.add_list [ q.q; q.u ; q.v]) in
             let diagonal_2 = AABB.create_points (Vec3.add q.q q.u) (Vec3.add q.q q.v) in
             AABB.create_aabb diagonal_1 diagonal_2
+        | Box b ->
+            let aabb = AABB.create_aabb
+                (create_bounding_box b.quads.(0)) (create_bounding_box b.quads.(1)) in
+            let aabb = AABB.create_aabb
+                (aabb) (create_bounding_box b.quads.(2)) in
+            let aabb = AABB.create_aabb
+                (aabb) (create_bounding_box b.quads.(3)) in
+            let aabb = AABB.create_aabb
+                (aabb) (create_bounding_box b.quads.(4)) in
+            let aabb = AABB.create_aabb
+                (aabb) (create_bounding_box b.quads.(5)) in
+            aabb
         | None -> AABB.empty
 
 
@@ -133,10 +175,23 @@ module Shape = struct
                     HitRecord.Hit hit_record
 
 
-    let check_collision r shape interval =
+    let rec check_collision r shape interval =
         match shape with
         | Sphere s -> sphere_ray_collision r s interval
         | Quad q -> quad_ray_collision r q interval
+        | Box b ->
+            let h0  = check_collision r b.quads.(0) interval in
+            let h1  = check_collision r b.quads.(1) interval in
+            let h2  = check_collision r b.quads.(2) interval in
+            let h3  = check_collision r b.quads.(3) interval in
+            let h4  = check_collision r b.quads.(4) interval in
+            let h5  = check_collision r b.quads.(5) interval in
+            let hit = HitRecord.closest_hit h0 h1 in
+            let hit = HitRecord.closest_hit hit h2 in
+            let hit = HitRecord.closest_hit hit h3 in
+            let hit = HitRecord.closest_hit hit h4 in
+            let hit = HitRecord.closest_hit hit h5 in
+            hit
         | _ -> raise (ShapeError "No collision defined for shape")
 
     let string_of_shape = function

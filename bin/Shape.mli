@@ -19,16 +19,21 @@ module Shape : sig
         w : Vec3.vec3;
     }
 
-    type shape_T = None
+    type box_data = {
+        quads: shape_T array
+    }
+    and shape_T = None
                  | Sphere of sphere_data
                  | Quad of quad_data
-                (* | Triangle *)
+                 | Box of box_data
 
     exception ShapeError of string
 
     val create_sphere : Vec3.vec3 -> float -> shape_T
 
     val create_quad : Vec3.vec3 -> Vec3.vec3 -> Vec3.vec3 -> shape_T
+
+    val create_box : Vec3.vec3 -> Vec3.vec3 -> shape_T
 
     val create_bounding_box : shape_T -> AABB.aabb_T
 

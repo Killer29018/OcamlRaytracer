@@ -266,12 +266,6 @@ let _simple_lights = fun () ->
     let _object_3 = Object.create shape_diffuse mat_diffuse in
     let _object_4 = Object.create sphere_light mat_diffuse in
 
-    let translate = Transform.create_translate (Vec3.create 0. ~-.1. 0.) in
-    let rotate = Transform.create_rotate_y 90. in
-    Object.add_transform _object_3 translate;
-    Object.add_transform _object_3 rotate;
-
-
     let objects = [|
         _object_1;
         _object_2;
@@ -283,7 +277,7 @@ let _simple_lights = fun () ->
 
     let aspect = 16. /. 9. in
 
-    let image_width = 400 in
+    let image_width = 100 in
     let image_height = int_of_float ((float_of_int image_width) /. aspect) in
 
     let vfov = 20. in
@@ -335,12 +329,27 @@ let _cornell_box = fun () ->
                                        (Vec3.create ~-.130.     0.      0.)
                                        (Vec3.create      0.     0. ~-.105.) in
 
+    let b1 = Shape.create_box (Vec3.create 0. 0. 0.) (Vec3.create 165. ~-.330. 165.)in
+    let b2 = Shape.create_box (Vec3.create 0. 0. 0.) (Vec3.create 165. ~-.165. 165.)in
+
     let _object_1 = Object.create quad_1 mat_green in
     let _object_2 = Object.create quad_2 mat_red   in
     let _object_3 = Object.create quad_3 mat_white in
     let _object_4 = Object.create quad_4 mat_white in
     let _object_5 = Object.create quad_5 mat_white in
     let _object_6 = Object.create quad_light mat_light in
+
+    let _object_7 = Object.create b1 mat_white in
+    Object.add_transform _object_7
+        (Transform.create_rotate_y ~-.15.);
+    Object.add_transform _object_7
+        (Transform.create_translate (Vec3.create 130. 0. 295.));
+
+    let _object_8 = Object.create b2 mat_white in
+    Object.add_transform _object_8
+        (Transform.create_rotate_y 18.);
+    Object.add_transform _object_8
+        (Transform.create_translate (Vec3.create 265. 0. 65.));
 
 
     let objects = [|
@@ -349,7 +358,9 @@ let _cornell_box = fun () ->
         _object_3;
         _object_4;
         _object_5;
-        _object_6
+        _object_6;
+        _object_7;
+        _object_8;
     |] in
 
     let bvh = BVH_Node.create objects in
@@ -387,5 +398,5 @@ let () =
     (* _checkered_spheres () *)
     (* _perlin_spheres () *)
     (* _quads () *)
-    _simple_lights ()
-    (* _cornell_box () *)
+    (* _simple_lights () *)
+    _cornell_box ()
